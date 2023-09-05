@@ -7,8 +7,7 @@ import { Dialog } from '@hilla/react-components/Dialog.js';
 import { ContactEndpoint } from 'Frontend/generated/endpoints';
 import { TextField } from '@hilla/react-components/TextField.js';
 import { Button } from '@hilla/react-components/Button.js';
-import { useMemo, useState } from 'react';
-import { set } from 'date-fns';
+import { useCallback, useState } from 'react';
 
 type Props = {
   opened: boolean;
@@ -24,8 +23,8 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
 
   // if the filter changes, useMemo will re-run the callback and return the new dataProvider,
   // otherwise the previous cached value will be used.
-  const dataProvider = useMemo(
-    () => async (params: GridDataProviderParams<Contact>, callback: GridDataProviderCallback<Contact>) => {
+  const dataProvider = useCallback(
+    async (params: GridDataProviderParams<Contact>, callback: GridDataProviderCallback<Contact>) => {
       let dir: string | undefined = undefined;
       if (direction == 'asc') {
         dir = 'asc';

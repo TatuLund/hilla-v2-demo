@@ -1,6 +1,6 @@
 import type Todo from 'Frontend/generated/com/example/application/Todo';
 import type Contact from 'Frontend/generated/com/example/application/Contact';
-import { useEffect, useRef, useState } from 'react';
+import { createElement, useEffect, useRef, useState } from 'react';
 import { useForm } from '@hilla/react-form';
 import { EventEndpoint, TodoEndpoint } from 'Frontend/generated/endpoints';
 import { EndpointValidationError, Subscription } from '@hilla/frontend';
@@ -10,7 +10,7 @@ import { TextField } from '@hilla/react-components/TextField.js';
 import { IntegerField } from '@hilla/react-components/IntegerField.js';
 import { Button, ButtonProps } from '@hilla/react-components/Button.js';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
-import { Icon } from '@hilla/react-components/Icon.js';
+import { Icon } from '@vaadin/icon/vaadin-icon.js';
 import { TodoGrid } from './TodoGrid';
 import { ContactDialog } from './ContactDialog';
 import { Notification } from '@hilla/react-components/Notification.js';
@@ -113,7 +113,9 @@ export default function TodoView(): JSX.Element {
   return (
     <>
       <div className="grid gap-m shadow-s m-m p-s">
-        <Button style={{width: '40px'}} id="new" theme="tertiary icon" onClick={() => addNew(empty)}><Icon icon='vaadin:plus'/></Button>
+        <Button style={{ width: '60px' }} id="new" onClick={() => addNew(empty)}>
+          New
+        </Button>
         <FormLayout>
           <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
           <TextField label="Description" {...field(model.description)} />
