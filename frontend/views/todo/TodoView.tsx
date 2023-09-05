@@ -109,9 +109,7 @@ export default function TodoView(): JSX.Element {
     );
   }
 
-  // Use formik to bind Todo object with the form.
-  // The errorMessage is bound from formik.errors for validation errors.
-  // As this is a complex view, it has been sliced down to sub components
+  // Use useForm to bind the fields with ...field directive.
   return (
     <>
       <div className="grid gap-m shadow-s m-m p-s">
