@@ -73,8 +73,7 @@
     "@hilla/generator-typescript-cli": "$@hilla/generator-typescript-cli",
     "@hilla/react-form": "$@hilla/react-form",
     "line-awesome": "$line-awesome",
-    "date-fns": "$date-fns",
-    "@vaadin/icon": "$@vaadin/icon"
+    "date-fns": "$date-fns"
   },
   "vaadin": {
     "dependencies": {
@@ -115,6 +114,6 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "3cec0f85ace3ba7a9ba6f0851836194137d49f99771360a0b0ac3daa1e728dc2"
+    "hash": "a19640cf25f8699cb46b2242d512af4e39b7b6cede6789f58af01a1bc352ab8a"
   }
 }

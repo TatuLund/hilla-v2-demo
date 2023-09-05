@@ -8,7 +8,7 @@ import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { ComboBox } from '@hilla/react-components/ComboBox.js';
 import { TextField } from '@hilla/react-components/TextField.js';
 import { IntegerField } from '@hilla/react-components/IntegerField.js';
-import { Button } from '@hilla/react-components/Button.js';
+import { Button, ButtonProps } from '@hilla/react-components/Button.js';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import { Icon } from '@hilla/react-components/Icon.js';
 import { TodoGrid } from './TodoGrid';

@@ -33,8 +33,8 @@ public class ContactEndpoint {
     }
 
     @Nonnull
-    public PageResponse getPage(int page, int pageSize, String filter) {
-        var dbPage = contactService.getPage(page, pageSize, filter);
+    public PageResponse getPage(int page, int pageSize, String filter, String direction) {
+        var dbPage = contactService.getPage(page, pageSize, filter, direction);
         var response = new PageResponse();
         response.content = dbPage.getContent();
         response.size = dbPage.getTotalElements();
