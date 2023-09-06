@@ -12,8 +12,13 @@ import reactor.core.publisher.Sinks.Many;
 @Service
 public class EventService {
 
+    public enum MessageType {
+        INFO, ERROR
+    }
+
     public static class Message {
         public @Nonnull String data;
+        public @Nonnull MessageType messageType = MessageType.INFO;
     }
 
     private Many<Message> event;

@@ -29,11 +29,13 @@ export default function TodoView(): JSX.Element {
   const { value, model, field, invalid, submit, read } = useForm(TodoModel, { onSubmit: submitTodo });
 
   async function submitTodo(todo: Todo) {
-    const saved = (await TodoEndpoint.save(todo)) ?? todo;
-    if (adding) {
-      setTodos([...todos, saved]);
-    } else {
-      setTodos(todos.map((item) => (item.id === saved.id ? saved : item)));
+    const saved = await TodoEndpoint.save(todo);
+    if (saved) {
+      if (adding) {
+        setTodos([...todos, saved]);
+      } else {
+        setTodos(todos.map((item) => (item.id === saved.id ? saved : item)));
+      }
     }
   }
 
@@ -54,7 +56,11 @@ export default function TodoView(): JSX.Element {
       if (!subscription) {
         setSubscription(
           EventEndpoint.getEventsCancellable().onNext((event) => {
-            Notification.show(event.data);
+            if (event.messageType == 'ERROR') {
+              Notification.show(event.data, { theme: 'error' });
+            } else {
+              Notification.show(event.data);
+            }
           })
         );
       }
@@ -120,7 +126,14 @@ export default function TodoView(): JSX.Element {
           <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
           <TextField label="Description" {...field(model.description)} />
           <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
-          <LocalizedDatePicker autoselect autoOpenDisabled label="Deadline" language='fi' helperText="Finnish format" {...field(model.deadline)} />
+          <LocalizedDatePicker
+            autoselect
+            autoOpenDisabled
+            label="Deadline"
+            language="fi"
+            helperText="Finnish format"
+            {...field(model.deadline)}
+          />
         </FormLayout>
         <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
         <FormButtons></FormButtons>

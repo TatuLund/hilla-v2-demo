@@ -34,6 +34,10 @@ public class ContactEndpoint {
 
     @Nonnull
     public PageResponse getPage(int page, int pageSize, String filter, String direction) {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+        }
         var dbPage = contactService.getPage(page, pageSize, filter, direction);
         var response = new PageResponse();
         response.content = dbPage.getContent();
@@ -42,7 +46,11 @@ public class ContactEndpoint {
         return response;
     }
     
-    public long getCount() { 
+    public long getCount() {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+        } 
         return contactService.getCount();
     }
 
