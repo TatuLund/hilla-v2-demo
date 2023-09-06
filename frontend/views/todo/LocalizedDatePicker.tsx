@@ -15,8 +15,6 @@ type I18ns = Record<string, DatePickerI18n>;
 
 export type Language = 'us' | 'fi';
 
-const languages: Language[] = ['us', 'fi'];
-
 const monthNames: Months = {
   us: [
     'January',
@@ -78,29 +76,14 @@ const texts: Localization = {
   fi: { today: 'Tänään', cancel: 'Peruuta', referenceDate: '1970-01-01' },
 };
 
-type Props = {
-  id?: string;
-  className?: string;
-  label?: string | undefined;
-  value?: string | undefined;
-  errorMessage?: string | undefined;
-  invalid?: boolean | undefined;
-  helperText?: string | undefined;
-  required?: boolean | undefined;
-  language: Language;
-  autoselect?: boolean | undefined;
-  autoOpenDisabled?: boolean | undefined;
-  theme?: string | undefined;
-};
-
 function createI18n(language: Language): DatePickerI18n {
   const formatDateIso8601 = (dateParts: DatePickerDate): string => {
     const { year, month, day } = dateParts;
     const date = new Date(year, month, day);
-  
+
     return dateFnsFormat(date, dateFormats[language]);
   };
-  
+
   const parseDateIso8601 = (inputValue: string): DatePickerDate => {
     var date: Date;
     if (inputValue.length > 8) {
@@ -127,11 +110,28 @@ function createI18n(language: Language): DatePickerI18n {
   };
 }
 
+const languages: Language[] = ['us', 'fi'];
+
 const i18ns: I18ns = {};
 
 languages.forEach((lang) => {
   i18ns[lang] = createI18n(lang);
 });
+
+type Props = {
+  id?: string;
+  className?: string;
+  label?: string | undefined;
+  value?: string | undefined;
+  errorMessage?: string | undefined;
+  invalid?: boolean | undefined;
+  helperText?: string | undefined;
+  required?: boolean | undefined;
+  language: Language;
+  autoselect?: boolean | undefined;
+  autoOpenDisabled?: boolean | undefined;
+  theme?: string | undefined;
+};
 
 export const LocalizedDatePicker = forwardRef<DatePickerWebComponent, Props>((props: Props, ref) => (
   <DatePicker ref={ref} i18n={i18ns[props.language]} {...props} />
