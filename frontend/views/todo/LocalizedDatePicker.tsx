@@ -15,8 +15,6 @@ type I18ns = Record<string, DatePickerI18n>;
 
 export type Language = 'us' | 'fi';
 
-var language: Language = 'fi';
-
 const languages: Language[] = ['us', 'fi'];
 
 const monthNames: Months = {
@@ -90,26 +88,29 @@ type Props = {
   helperText?: string | undefined;
   required?: boolean | undefined;
   language: Language;
-};
-
-const formatDateIso8601 = (dateParts: DatePickerDate): string => {
-  const { year, month, day } = dateParts;
-  const date = new Date(year, month, day);
-
-  return dateFnsFormat(date, dateFormats[language]);
-};
-
-const parseDateIso8601 = (inputValue: string): DatePickerDate => {
-  var date: Date;
-  if (inputValue.length > 8) {
-    date = dateFnsParse(inputValue, dateFormats[language], new Date());
-  } else {
-    date = dateFnsParse(inputValue, dateFormatsShort[language], new Date());
-  }
-  return { year: date.getFullYear(), month: date.getMonth(), day: date.getDate() };
+  autoselect?: boolean | undefined;
+  autoOpenDisabled?: boolean | undefined;
+  theme?: string | undefined;
 };
 
 function createI18n(language: Language): DatePickerI18n {
+  const formatDateIso8601 = (dateParts: DatePickerDate): string => {
+    const { year, month, day } = dateParts;
+    const date = new Date(year, month, day);
+  
+    return dateFnsFormat(date, dateFormats[language]);
+  };
+  
+  const parseDateIso8601 = (inputValue: string): DatePickerDate => {
+    var date: Date;
+    if (inputValue.length > 8) {
+      date = dateFnsParse(inputValue, dateFormats[language], new Date());
+    } else {
+      date = dateFnsParse(inputValue, dateFormatsShort[language], new Date());
+    }
+    return { year: date.getFullYear(), month: date.getMonth(), day: date.getDate() };
+  };
+
   return {
     monthNames: monthNames[language],
     weekdays: weekdays[language],

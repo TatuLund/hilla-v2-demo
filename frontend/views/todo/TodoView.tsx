@@ -120,7 +120,7 @@ export default function TodoView(): JSX.Element {
           <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
           <TextField label="Description" {...field(model.description)} />
           <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
-          <LocalizedDatePicker label="Deadline" language='fi' helperText="Finnish format" {...field(model.deadline)} />
+          <LocalizedDatePicker autoselect autoOpenDisabled label="Deadline" language='fi' helperText="Finnish format" {...field(model.deadline)} />
         </FormLayout>
         <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
         <FormButtons></FormButtons>
