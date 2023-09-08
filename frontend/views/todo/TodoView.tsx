@@ -26,6 +26,7 @@ export default function TodoView(): JSX.Element {
   const [subscription, setSubscription] = useState<Subscription<Message>>();
   const [assigned, setAssigned] = useState<Contact>();
   const [todos, setTodos] = useState(Array<Todo>());
+  const [saveCount, setSaveCount] = useState(0);
   const presets = ['Make food', 'Clean the house', 'Do the groceries', 'Mow the lawn', 'Walk the dog'];
   const { value, model, field, invalid, submit, read } = useForm(TodoModel, { onSubmit: submitTodo });
 
@@ -72,6 +73,9 @@ export default function TodoView(): JSX.Element {
         setSubscription(
           EventEndpoint.getEventsCancellable().onNext((event) => {
             Notification.show(event.data, { theme: 'success' });
+            setTimeout(() => {
+              setSaveCount(count => count + 1);
+            }, 3000);
           })
         );
       }
@@ -79,7 +83,7 @@ export default function TodoView(): JSX.Element {
     return () => {
       subscription?.cancel();
     };
-  }, []);
+  }, [saveCount]);
 
   // Update status of the Todo, this function is passed down to TodoItem via TodoGrid
   async function changeStatus(todo: Todo, done: boolean | undefined): Promise<void> {
