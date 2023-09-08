@@ -1,16 +1,17 @@
 import type Todo from 'Frontend/generated/com/example/application/Todo';
 import type Contact from 'Frontend/generated/com/example/application/Contact';
-import { createElement, useEffect, useRef, useState } from 'react';
+import { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from '@hilla/react-form';
 import { EventEndpoint, TodoEndpoint } from 'Frontend/generated/endpoints';
-import { EndpointValidationError, Subscription } from '@hilla/frontend';
+import { EndpointError, EndpointValidationError, Subscription } from '@hilla/frontend';
 import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { ComboBox } from '@hilla/react-components/ComboBox.js';
 import { TextField } from '@hilla/react-components/TextField.js';
+import { Icon } from '@hilla/react-components/Icon.js';
+import '@vaadin/icons';
 import { IntegerField } from '@hilla/react-components/IntegerField.js';
 import { Button, ButtonProps } from '@hilla/react-components/Button.js';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
-import { Icon } from '@vaadin/icon/vaadin-icon.js';
 import { TodoGrid } from './TodoGrid';
 import { ContactDialog } from './ContactDialog';
 import { Notification } from '@hilla/react-components/Notification.js';
@@ -29,12 +30,26 @@ export default function TodoView(): JSX.Element {
   const { value, model, field, invalid, submit, read } = useForm(TodoModel, { onSubmit: submitTodo });
 
   async function submitTodo(todo: Todo) {
-    const saved = await TodoEndpoint.save(todo);
+    var saved: Todo | undefined;
+    try {
+      saved = await TodoEndpoint.save(todo);
+    } catch (e) {
+      if (e instanceof EndpointError) {
+        const json = JSON.parse(e.message);
+        if (json.type == 'dev.hilla.exception.EndpointException') {
+          Notification.show(json.message, { theme: 'error' });
+          return;
+        }
+      }
+      Notification.show('Error in saving', { theme: 'error' });
+      return;
+    }
     if (saved) {
+      const newTodo = saved;
       if (adding) {
-        setTodos([...todos, saved]);
+        setTodos([...todos, newTodo]);
       } else {
-        setTodos(todos.map((item) => (item.id === saved.id ? saved : item)));
+        setTodos(todos.map((item) => (item.id === newTodo.id ? newTodo : item)));
       }
     }
   }
@@ -56,11 +71,7 @@ export default function TodoView(): JSX.Element {
       if (!subscription) {
         setSubscription(
           EventEndpoint.getEventsCancellable().onNext((event) => {
-            if (event.messageType == 'ERROR') {
-              Notification.show(event.data, { theme: 'error' });
-            } else {
-              Notification.show(event.data);
-            }
+            Notification.show(event.data, { theme: 'success' });
           })
         );
       }
@@ -120,7 +131,7 @@ export default function TodoView(): JSX.Element {
     <>
       <div className="grid gap-m shadow-s m-m p-s">
         <Button style={{ width: '60px' }} id="new" onClick={() => addNew(empty)}>
-          New
+          <Icon icon="vaadin:plus"></Icon>
         </Button>
         <FormLayout>
           <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>

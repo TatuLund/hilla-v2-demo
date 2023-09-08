@@ -18,6 +18,7 @@
     "@polymer/polymer": "3.5.1",
     "@vaadin/bundles": "24.1.6",
     "@vaadin/common-frontend": "0.0.18",
+    "@vaadin/icons": "24.1.6",
     "@vaadin/router": "1.7.5",
     "classnames": "^2.3.2",
     "construct-style-sheets-polyfill": "3.1.0",
@@ -32,12 +33,16 @@
     "@lit-labs/react": "^1.1.0",
     "@rollup/plugin-replace": "5.0.2",
     "@rollup/pluginutils": "5.0.2",
+    "@testing-library/react": "^14.0.0",
+    "@types/jsdom": "^21.1.2",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "4.0.0",
     "async": "3.2.2",
     "glob": "7.2.3",
+    "jsdom": "^22.1.0",
     "mkdirp": "1.0.4",
+    "npm-dedupe": "^2.0.0",
     "rollup-plugin-brotli": "3.1.0",
     "rollup-plugin-visualizer": "5.9.0",
     "strip-css-comments": "5.0.0",
@@ -45,6 +50,7 @@
     "typescript": "5.0.4",
     "vite": "4.3.9",
     "vite-plugin-checker": "0.5.5",
+    "vitest": "^0.34.3",
     "workbox-build": "7.0.0",
     "workbox-core": "7.0.0",
     "workbox-precaching": "7.0.0"
@@ -73,7 +79,8 @@
     "@hilla/generator-typescript-cli": "$@hilla/generator-typescript-cli",
     "@hilla/react-form": "$@hilla/react-form",
     "line-awesome": "$line-awesome",
-    "date-fns": "$date-fns"
+    "date-fns": "$date-fns",
+    "@vaadin/icons": "$@vaadin/icons"
   },
   "vaadin": {
     "dependencies": {
@@ -114,6 +121,6 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "a19640cf25f8699cb46b2242d512af4e39b7b6cede6789f58af01a1bc352ab8a"
+    "hash": "a28860fc170223fcee4c224841bdb6360efc209aa9f55e7e32d4e6b8b11672ae"
   }
 }

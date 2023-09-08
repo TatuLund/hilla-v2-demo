@@ -32,7 +32,7 @@
   "include": [
     "frontend/**/*",
     "types.d.ts"
-  ],
+, "tests/sum.test.tsx", "tests/Hello.test.tsx", "tests/App.test.tsx"  ],
   "exclude": [
     "frontend/generated/jar-resources/**"
   ]

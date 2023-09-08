@@ -14,6 +14,7 @@ import com.example.application.EventService.MessageType;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
 import dev.hilla.Nonnull;
+import dev.hilla.exception.EndpointException;
 
 @Endpoint
 @AnonymousAllowed
@@ -40,11 +41,7 @@ public class TodoEndpoint {
     if (todo.getAssigned() != null) {
       boolean match = isAssigneOccupied(todo);
       if (match) {
-        message.data = "Assignee " + todo.getAssigned().getId() + " already has a todo!";
-        message.messageType = MessageType.ERROR;
-        logger.info(message.data);
-        eventService.send(message);
-        return null;
+        throw new EndpointException("Assignee " + todo.getAssigned().getId() + " already has a todo!");
       }
     }
     Todo result = repository.save(todo);
