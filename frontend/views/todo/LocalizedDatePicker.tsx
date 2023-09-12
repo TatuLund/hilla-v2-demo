@@ -1,4 +1,4 @@
-import { DatePicker, DatePickerDate, DatePickerI18n } from '@hilla/react-components/DatePicker.js';
+import { DatePicker, DatePickerDate, DatePickerI18n, DatePickerProps } from '@hilla/react-components/DatePicker.js';
 import dateFnsFormat from 'date-fns/format';
 import dateFnsParse from 'date-fns/parse';
 import { DatePicker as DatePickerWebComponent } from '@vaadin/date-picker/vaadin-date-picker.js';
@@ -118,21 +118,10 @@ languages.forEach((lang) => {
   i18ns[lang] = createI18n(lang);
 });
 
-type Props = {
-  id?: string;
-  className?: string;
-  label?: string | undefined;
-  value?: string | undefined;
-  errorMessage?: string | undefined;
-  invalid?: boolean | undefined;
-  helperText?: string | undefined;
-  required?: boolean | undefined;
-  language: Language;
-  autoselect?: boolean | undefined;
-  autoOpenDisabled?: boolean | undefined;
-  theme?: string | undefined;
-};
+type InheritedDatePickerProps = Omit<DatePickerProps, 'dangerouslySetInnerHTML' | 'i18n'>;
 
-export const LocalizedDatePicker = forwardRef<DatePickerWebComponent, Props>((props: Props, ref) => (
-  <DatePicker ref={ref} i18n={i18ns[props.language]} {...props} />
-));
+export type LocalizedDatePickerProps = InheritedDatePickerProps & { language: Language };
+
+export const LocalizedDatePicker = forwardRef<DatePickerWebComponent, LocalizedDatePickerProps>(
+  (props: LocalizedDatePickerProps, ref) => <DatePicker ref={ref} i18n={i18ns[props.language]} {...props} />
+);
