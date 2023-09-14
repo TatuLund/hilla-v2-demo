@@ -34,9 +34,8 @@
 
   vaadin-grid::part(row):hover {
     background: var(--lumo-contrast-10pct);
-    border: 1px solid var(--lumo-primary-color-50pct);
   }
 
-  vaadin-grid::part(cell) {
+  vaadin-grid::part(body-cell) {
     background-color: unset !important;
   }
