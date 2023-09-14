@@ -31,3 +31,8 @@
     --lumo-body-text-color: rgba(55, 83, 118, 0.9);
     --lumo-header-text-color: hsl(214, 42%, 28%);
   }
+
+  vaadin-grid::part(row):hover {
+    background: var(--lumo-primary-color-50pct);
+    border: 1px solid var(--lumo-primary-color-50pct);
+  }
