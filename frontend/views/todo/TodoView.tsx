@@ -19,15 +19,33 @@ import Message from 'Frontend/generated/com/example/application/EventService/Mes
 import TodoModel from 'Frontend/generated/com/example/application/TodoModel';
 import { LocalizedDatePicker } from '../../components/localizeddatepicker/LocalizedDatePicker';
 
-// Use custom hook to fetch all todos from TodoEndpoint.findAll
+// Use custom hook to fetch all todos from TodoEndpoint.findAll.
+// Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
 function useTodos() {
+  const [subscription, setSubscription] = useState<Subscription<Message>>();
+  const [saveCount, setSaveCount] = useState(0);
   const [todos, setTodos] = useState(Array<Todo>());
 
   useEffect(() => {
     (async () => {
       setTodos(await TodoEndpoint.findAll());
+      if (!subscription) {
+        setSubscription(
+          EventEndpoint.getEventsCancellable().onNext((event) => {
+            Notification.show(event.data, { theme: 'success' });
+            setTimeout(() => {
+              // This will trigger useEffect again and fetch all todos 
+              // when the notification is shown.
+              setSaveCount((count) => count + 1);
+            }, 3000);
+          })
+        );
+      }
     })();
-  }, []);
+    return () => {
+      subscription?.cancel();
+    };
+  }, [saveCount]);
 
   return [todos, setTodos] as const;
 }
@@ -50,9 +68,7 @@ export default function TodoView(): JSX.Element {
   const empty: Todo = { task: '', done: false };
   const [dialogOpened, setDialogOpened] = useState(false);
   const [adding, setAdding] = useState(true);
-  const [subscription, setSubscription] = useState<Subscription<Message>>();
   const [assigned, setAssigned] = useState<Contact>();
-  const [saveCount, setSaveCount] = useState(0);
   const presets = ['Make food', 'Clean the house', 'Do the groceries', 'Mow the lawn', 'Walk the dog'];
   const { value, model, field, invalid, submit, read } = useForm(TodoModel, { onSubmit: submitTodo });
 
@@ -83,24 +99,6 @@ export default function TodoView(): JSX.Element {
     setAdding(true);
     read(empty);
   }
-
-  useEffect(() => {
-    (async () => {
-      if (!subscription) {
-        setSubscription(
-          EventEndpoint.getEventsCancellable().onNext((event) => {
-            Notification.show(event.data, { theme: 'success' });
-            setTimeout(() => {
-              setSaveCount(count => count + 1);
-            }, 3000);
-          })
-        );
-      }
-    })();
-    return () => {
-      subscription?.cancel();
-    };
-  }, [saveCount]);
 
   // Update status of the Todo, this function is passed down to TodoItem via TodoGrid
   async function changeStatus(todo: Todo, done: boolean | undefined): Promise<void> {
@@ -168,7 +166,7 @@ export default function TodoView(): JSX.Element {
           />
         </FormLayout>
         <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
-        <FormButtons/>
+        <FormButtons />
       </div>
       <div className="m-m shadow-s p-s">
         <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
