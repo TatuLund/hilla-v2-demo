@@ -6,13 +6,13 @@ import org.slf4j.LoggerFactory;
 import com.example.application.EventService.Message;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-import dev.hilla.Endpoint;
+import dev.hilla.BrowserCallable;
 import dev.hilla.EndpointSubscription;
 import dev.hilla.Nonnull;
 import reactor.core.publisher.Flux;
 
 @AnonymousAllowed
-@Endpoint
+@BrowserCallable
 public class EventEndpoint {
 
     Logger logger = LoggerFactory.getLogger(EventEndpoint.class);

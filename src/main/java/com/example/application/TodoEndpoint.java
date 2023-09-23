@@ -7,17 +7,15 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 
 import com.example.application.EventService.Message;
-import com.example.application.EventService.MessageType;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import dev.hilla.Endpoint;
+
+import dev.hilla.BrowserCallable;
 import dev.hilla.Nonnull;
 import dev.hilla.exception.EndpointException;
 
-@Endpoint
+@BrowserCallable
 @AnonymousAllowed
 public class TodoEndpoint {
 
@@ -25,12 +23,10 @@ public class TodoEndpoint {
 
   private TodoRepository repository;
   private EventService eventService;
-  private ContactRepository contactRepository;
-
-  public TodoEndpoint(TodoRepository repository, EventService eventService, ContactRepository contactRepository) {
+ 
+  public TodoEndpoint(TodoRepository repository, EventService eventService) {
     this.repository = repository;
     this.eventService = eventService;
-    this.contactRepository = contactRepository;
   }
 
   public @Nonnull List<@Nonnull Todo> findAll() {
