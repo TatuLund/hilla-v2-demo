@@ -23,9 +23,13 @@ export function TodoItem({ todo, onChangeStatus, onClick }: Props): JSX.Element 
       <span>{todo.description}</span>
       <span>{todo.assigned?.firstName + ' ' + todo.assigned?.lastName}</span>
       <span>{todo.deadline}</span>
-      <Badge type='badge' id={'badge-' + todo.id} className="text-s ml-auto" text={'' + todo.priority}></Badge>
+      <Badge
+        type={todo.priority == 5 ? 'badge primary' : 'badge'}
+        id={'badge-' + todo.id}
+        className="text-s ml-auto"
+        text={'' + todo.priority}
+      ></Badge>
       <Tooltip position="end-bottom" for={'badge-' + todo.id} text="Priority"></Tooltip>
     </>
   );
 }
-
