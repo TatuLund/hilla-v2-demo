@@ -7,7 +7,8 @@ import { Dialog } from '@hilla/react-components/Dialog.js';
 import { ContactEndpoint } from 'Frontend/generated/endpoints';
 import { TextField } from '@hilla/react-components/TextField.js';
 import { Button } from '@hilla/react-components/Button.js';
-import { createElement, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { Grid as GridComponent } from '@vaadin/grid';
 
 type Props = {
   opened: boolean;
@@ -39,6 +40,16 @@ function useDataProvider() {
   );
 
   return [dataProvider, filter, setFilter, direction, setDirection] as const;
+}
+
+function addTooltipToColumn(grid: GridComponent<Contact> | null, column: number) {
+  // Add tooltip to the sorter column using plain JS
+  const sorter = grid?.getElementsByTagName('vaadin-grid-sorter')[column];
+  sorter?.setAttribute('id', 'sorter');
+  const tooltip = document.createElement('vaadin-tooltip');
+  tooltip.setAttribute('for', 'sorter');
+  tooltip.setAttribute('text', 'Sort by last name and first name');
+  sorter?.parentElement?.appendChild(tooltip);
 }
 
 // Show Grid in the dialog to choose a contact.
@@ -82,13 +93,7 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
           ref={(element) => {
             setTimeout(() => {
               // Use setTimeout to wait for the Grid to be rendered
-              // and then add tooltip to the sorter.
-              const sorter = element?.getElementsByTagName('vaadin-grid-sorter')[0];
-              sorter?.setAttribute('id', 'sorter');
-              const tooltip = document.createElement('vaadin-tooltip');
-              tooltip.setAttribute('for', 'sorter');
-              tooltip.setAttribute('text', 'Sort by last name and first name');
-              sorter?.parentElement?.appendChild(tooltip);
+              addTooltipToColumn(element, 0);
             }, 100);
           }}
           style={{ minWidth: '900px' }}

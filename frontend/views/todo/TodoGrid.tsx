@@ -12,7 +12,7 @@ export function TodoGrid({ todos, onChangeStatus, onClick }: Props): JSX.Element
   return (
     <>
       <div className="grid grid-cols-6 gap-s">
-        <GridHeader/>
+        <GridHeader />
         {todos.map((todo) => (
           <TodoItem
             onClick={(todo) => onClick(todo)}
