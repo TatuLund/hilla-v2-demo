@@ -1,6 +1,7 @@
 package com.example.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,17 +38,32 @@ public class TodoEndpoint {
   }
 
   public Todo save(Todo todo) {
-    Message message = new Message();
-    if (todo.getAssigned() != null) {
-      boolean match = isAssigneOccupied(todo);
-      if (match) {
-        throw new EndpointException("Assignee " + todo.getAssigned().getId() + " already has a todo!");
-      }
+    Todo result;
+    Optional<Todo> old;
+
+    if (todo.getId() != null) {
+      old = repository.findById(todo.getId());
+    } else {
+      old = Optional.empty();
     }
-    Todo result = repository.save(todo);
-    message.data = "Todo: " + todo.getId() + "/" + todo.getTask() + " saved!";
-    logger.info(message.data);
-    eventService.send(message);
+
+    if (old.isPresent()) {
+      result = repository.save(todo);
+      logger.info("Todo: " + todo.getId() + "/" + todo.getTask() + " updated!");
+    } else {
+      Message message = new Message();
+      if (todo.getAssigned() != null) {
+        boolean match = isAssigneOccupied(todo);
+        if (match) {
+          throw new EndpointException("Assignee " + todo.getAssigned().getId() + " already has a todo!");
+        }
+      }
+      result = repository.save(todo);
+      message.data = "Todo: " + todo.getId() + "/" + todo.getTask() + " saved!";
+      logger.info(message.data);
+      eventService.send(message);
+    }
+
     return result;
   }
 
@@ -57,6 +73,7 @@ public class TodoEndpoint {
     } catch (InterruptedException e) {
     }
     List<Todo> todos = repository.findAll();
+    todos.removeIf(t -> t.getId() == todo.getId());
     IntStream ids = todos.stream().filter(t -> (t.getAssigned() != null)).mapToInt(t -> t.getAssigned().getId());
     boolean match = ids.anyMatch(id -> id == todo.getAssigned().getId());
     return match;
