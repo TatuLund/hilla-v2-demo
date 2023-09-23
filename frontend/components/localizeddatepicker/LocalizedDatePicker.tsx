@@ -122,6 +122,7 @@ type InheritedDatePickerProps = Omit<DatePickerProps, 'dangerouslySetInnerHTML' 
 
 export type LocalizedDatePickerProps = InheritedDatePickerProps & { language: Language };
 
+// DatePicker with i18n support
 export const LocalizedDatePicker = forwardRef<DatePickerWebComponent, LocalizedDatePickerProps>(
   (props: LocalizedDatePickerProps, ref) => <DatePicker ref={ref} i18n={i18ns[props.language]} {...props} />
 );

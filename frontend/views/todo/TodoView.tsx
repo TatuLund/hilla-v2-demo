@@ -1,31 +1,57 @@
 import type Todo from 'Frontend/generated/com/example/application/Todo';
 import type Contact from 'Frontend/generated/com/example/application/Contact';
-import { createElement, useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from '@hilla/react-form';
 import { EventEndpoint, TodoEndpoint } from 'Frontend/generated/endpoints';
-import { EndpointError, EndpointValidationError, Subscription } from '@hilla/frontend';
+import { EndpointError, Subscription } from '@hilla/frontend';
 import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { ComboBox } from '@hilla/react-components/ComboBox.js';
 import { TextField } from '@hilla/react-components/TextField.js';
 import { Icon } from '@hilla/react-components/Icon.js';
 import '@vaadin/icons';
 import { IntegerField } from '@hilla/react-components/IntegerField.js';
-import { Button, ButtonProps } from '@hilla/react-components/Button.js';
+import { Button } from '@hilla/react-components/Button.js';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import { TodoGrid } from './TodoGrid';
 import { ContactDialog } from './ContactDialog';
 import { Notification } from '@hilla/react-components/Notification.js';
 import Message from 'Frontend/generated/com/example/application/EventService/Message';
 import TodoModel from 'Frontend/generated/com/example/application/TodoModel';
-import { LocalizedDatePicker } from './LocalizedDatePicker';
+import { LocalizedDatePicker } from '../../components/localizeddatepicker/LocalizedDatePicker';
+
+// Use custom hook to fetch all todos from TodoEndpoint.findAll
+function useTodos() {
+  const [todos, setTodos] = useState(Array<Todo>());
+
+  useEffect(() => {
+    (async () => {
+      setTodos(await TodoEndpoint.findAll());
+    })();
+  }, []);
+
+  return [todos, setTodos] as const;
+}
+
+// Handle errors from the backend, which are thrown as EndpointError with JSON message.
+// Backend performs validation.
+function handleError(e: unknown) {
+  if (e instanceof EndpointError) {
+    const json = JSON.parse(e.message);
+    if (json.type == 'dev.hilla.exception.EndpointException') {
+      Notification.show(json.message, { theme: 'error' });
+      return;
+    }
+  }
+  Notification.show('Error in saving', { theme: 'error' });
+}
 
 export default function TodoView(): JSX.Element {
+  const [todos, setTodos] = useTodos();
   const empty: Todo = { task: '', done: false };
   const [dialogOpened, setDialogOpened] = useState(false);
   const [adding, setAdding] = useState(true);
   const [subscription, setSubscription] = useState<Subscription<Message>>();
   const [assigned, setAssigned] = useState<Contact>();
-  const [todos, setTodos] = useState(Array<Todo>());
   const [saveCount, setSaveCount] = useState(0);
   const presets = ['Make food', 'Clean the house', 'Do the groceries', 'Mow the lawn', 'Walk the dog'];
   const { value, model, field, invalid, submit, read } = useForm(TodoModel, { onSubmit: submitTodo });
@@ -35,14 +61,7 @@ export default function TodoView(): JSX.Element {
     try {
       saved = await TodoEndpoint.save(todo);
     } catch (e) {
-      if (e instanceof EndpointError) {
-        const json = JSON.parse(e.message);
-        if (json.type == 'dev.hilla.exception.EndpointException') {
-          Notification.show(json.message, { theme: 'error' });
-          return;
-        }
-      }
-      Notification.show('Error in saving', { theme: 'error' });
+      handleError(e);
       return;
     }
     if (saved) {
@@ -65,10 +84,8 @@ export default function TodoView(): JSX.Element {
     read(empty);
   }
 
-  // Fetch Todos from backend when TodoView is rendered the fist time.
   useEffect(() => {
     (async () => {
-      setTodos(await TodoEndpoint.findAll());
       if (!subscription) {
         setSubscription(
           EventEndpoint.getEventsCancellable().onNext((event) => {
@@ -151,7 +168,7 @@ export default function TodoView(): JSX.Element {
           />
         </FormLayout>
         <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
-        <FormButtons></FormButtons>
+        <FormButtons/>
       </div>
       <div className="m-m shadow-s p-s">
         <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
