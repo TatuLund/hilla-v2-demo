@@ -55,6 +55,7 @@ public class DataGenerator {
             var todoGenerator = new ExampleDataGenerator<>(Todo.class, LocalDateTime.now());
             todoGenerator.setData(Todo::setTask, DataType.TWO_WORDS);
             todoGenerator.setData(Todo::setDescription, DataType.SENTENCE);
+            todoGenerator.setData(Todo::setDone, DataType.BOOLEAN_10_90);
 
             var todos = todoGenerator.create(123, seed).stream().map(todo -> {
                 return todo;
