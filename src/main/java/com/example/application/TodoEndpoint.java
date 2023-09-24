@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.application.EventService.Message;
+import com.google.common.base.Objects;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import dev.hilla.BrowserCallable;
@@ -23,7 +24,7 @@ public class TodoEndpoint {
 
   private TodoRepository repository;
   private EventService eventService;
- 
+
   public TodoEndpoint(TodoRepository repository, EventService eventService) {
     this.repository = repository;
     this.eventService = eventService;
@@ -43,24 +44,35 @@ public class TodoEndpoint {
       old = Optional.empty();
     }
 
+    Message message = new Message();
+
     if (old.isPresent()) {
-      result = repository.save(todo);
-      logger.info("Todo: " + todo.getId() + "/" + todo.getTask() + " updated!");
+      message.data = "Todo: " + todo.getId() + "/" + todo.getTask() + " updated!";
     } else {
-      Message message = new Message();
-      if (todo.getAssigned() != null) {
-        boolean match = isAssigneOccupied(todo);
-        if (match) {
-          throw new EndpointException("Assignee " + todo.getAssigned().getId() + " already has a todo!");
-        }
-      }
-      result = repository.save(todo);
       message.data = "Todo: " + todo.getId() + "/" + todo.getTask() + " saved!";
-      logger.info(message.data);
-      eventService.send(message);
     }
 
+    if (todo.getAssigned() != null && isAssigneChanged(todo, old)) {
+      logger.info("Assignee changed to " + todo.getAssigned().getId() + " for todo " + todo.getId());
+      boolean match = isAssigneOccupied(todo);
+      if (match) {
+        throw new EndpointException("Assignee " + todo.getAssigned().getId() + " already has a todo!");
+      }
+    }
+    result = repository.save(todo);
+    logger.info(message.data);
+    eventService.send(message);
     return result;
+  }
+
+  private boolean isAssigneChanged(Todo todo, Optional<Todo> old) {
+    if (old.isPresent()) {
+      if (old.get().getAssigned() == null && todo.getAssigned() != null) {
+        return true;
+      }
+      return old.get().getAssigned().getId() == todo.getAssigned().getId();
+    }
+    return true;
   }
 
   private boolean isAssigneOccupied(Todo todo) {

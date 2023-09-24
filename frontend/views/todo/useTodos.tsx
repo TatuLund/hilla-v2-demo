@@ -6,13 +6,14 @@ import type Todo from 'Frontend/generated/com/example/application/Todo';
 import { Notification } from '@hilla/react-components/Notification.js';
 import Message from 'Frontend/generated/com/example/application/EventService/Message';
 import TodoModel from 'Frontend/generated/com/example/application/TodoModel';
+import MessageType from 'Frontend/generated/com/example/application/EventService/MessageType';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
 // This hook is used in TodoView and wraps the model data and functions in an array.
 export function useTodos() {
   const [subscription, setSubscription] = useState<Subscription<Message>>();
-  const [saveCount, setSaveCount] = useState(0);
+  const [messageCount, setMessageCount] = useState(0);
   const [todos, setTodos] = useState(Array<Todo>());
   const [adding, setAdding] = useState(true);
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
@@ -23,11 +24,16 @@ export function useTodos() {
       if (!subscription) {
         setSubscription(
           EventEndpoint.getEventsCancellable().onNext((event) => {
-            Notification.show(event.data, { theme: 'success' });
-            setTimeout(() => {
+            if (event.messageType == MessageType.EDITING) {
+              Notification.show(event.data, { theme: 'warning' });
+            } else {
+              Notification.show(event.data, { theme: 'success' });
+            }
+            setTimeout(async () => {
               // This will trigger useEffect again and fetch all todos
               // when the notification is shown.
-              setSaveCount((count) => count + 1);
+              setMessageCount((count) => count + 1);
+              setTodos(await TodoEndpoint.findAll());
             }, 3000);
           })
         );
@@ -36,7 +42,7 @@ export function useTodos() {
     return () => {
       subscription?.cancel();
     };
-  }, [saveCount]);
+  }, []);
 
   // Collect done Todos and request to remove from the database using TodoEndpoint.remove
   async function remove(): Promise<void> {
@@ -67,6 +73,13 @@ export function useTodos() {
   function edit(todo: Todo) {
     setAdding(false);
     read(todo);
+    const id = todo.id ? todo.id : 0;
+    const message: Message = {
+      id: id,
+      data: 'Some one is editing ' + todo.task,
+      messageType: MessageType.EDITING,
+    };
+    EventEndpoint.send(message);
   }
 
   function addNew() {
