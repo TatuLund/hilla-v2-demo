@@ -13,7 +13,6 @@ import MessageType from 'Frontend/generated/com/example/application/EventService
 // This hook is used in TodoView and wraps the model data and functions in an array.
 export function useTodos() {
   const [subscription, setSubscription] = useState<Subscription<Message>>();
-  const [messageCount, setMessageCount] = useState(0);
   const [todos, setTodos] = useState(Array<Todo>());
   const [adding, setAdding] = useState(true);
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
@@ -30,9 +29,7 @@ export function useTodos() {
               Notification.show(event.data, { theme: 'success' });
             }
             setTimeout(async () => {
-              // This will trigger useEffect again and fetch all todos
-              // when the notification is shown.
-              setMessageCount((count) => count + 1);
+              // Wait 3 seconds before updating the list of todos
               setTodos(await TodoEndpoint.findAll());
             }, 3000);
           })
