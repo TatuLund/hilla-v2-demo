@@ -92,7 +92,7 @@ public class TodoEndpoint {
     message.data = "Todos: " + todos.stream().map(todo -> "" + todo.getId()).collect(Collectors.joining(","))
         + " removed!";
     logger.info(message.data);
-    eventService.send(message);
     repository.deleteAll(todos);
+    eventService.send(message);
   }
 }

@@ -11,9 +11,12 @@ type Props = {
 
 // TodoItem is used in TodoGrid, this produces one row for TodoGrid
 export function TodoItem({ todo, onChangeStatus, onClick }: Props): JSX.Element {
+  // onCheckedChanged is called also when Checkbox value is changed programmatically
+  // thus using onClick. This is a workaround for the issue. Note that the value of
+  // the checkbox is not updated when clicked, thus the value is inverted.
   return (
     <>
-      <Checkbox checked={todo.done} onCheckedChanged={({ detail: { value } }) => onChangeStatus(todo, value)}>
+      <Checkbox checked={todo.done} onClick={({ currentTarget }) => onChangeStatus(todo, !currentTarget.checked)}>
         <Tooltip position="start" slot="tooltip" text="Done"></Tooltip>
       </Checkbox>
       <span id={'task-' + todo.id} onClick={(e) => onClick(todo)} className="text-primary text-l font-bold">
