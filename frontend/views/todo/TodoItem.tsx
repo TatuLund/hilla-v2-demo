@@ -20,14 +20,16 @@ export function TodoItem({ todo, onChangeStatus, onClick }: Props): JSX.Element 
         {todo.task}
       </span>
       <Tooltip position="start-bottom" for={'task-' + todo.id} text="Edit me"></Tooltip>
-      <span>{todo.description}</span>
-      <span>{todo.assigned?.firstName + ' ' + todo.assigned?.lastName}</span>
+      <span className="whitespace-nowrap overflow-ellipsis overflow-hidden">{todo.description}</span>
+      <span className={todo.assigned ? '' : 'text-warning'}>
+        {todo.assigned ? todo.assigned?.firstName + ' ' + todo.assigned?.lastName : 'unassigned'}
+      </span>
       <span>{todo.deadline}</span>
       <Badge
-        type={todo.priority == 5 ? 'badge primary' : 'badge'}
+        type={todo.priority ? (todo.priority == 5 ? 'badge primary' : 'badge') : 'badge warning'}
         id={'badge-' + todo.id}
         className="text-s ml-auto"
-        text={'' + todo.priority}
+        text={todo.priority ? '' + todo.priority : '-'}
       ></Badge>
       <Tooltip position="end-bottom" for={'badge-' + todo.id} text="Priority"></Tooltip>
     </>

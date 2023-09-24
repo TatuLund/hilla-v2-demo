@@ -1,7 +1,7 @@
 import type Contact from 'Frontend/generated/com/example/application/Contact';
 import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { ComboBox } from '@hilla/react-components/ComboBox.js';
-import { TextField } from '@hilla/react-components/TextField.js';
+import { TextArea } from '@hilla/react-components/TextArea.js';
 import { Icon } from '@hilla/react-components/Icon.js';
 import '@vaadin/icons';
 import { IntegerField } from '@hilla/react-components/IntegerField.js';
@@ -51,31 +51,34 @@ export default function TodoView(): JSX.Element {
   // Use useForm to bind the fields with ...field directive.
   return (
     <>
-      <div className="grid gap-m shadow-s m-m p-s">
-        <Button style={{ width: '60px' }} id="new" onClick={() => addNew()}>
-          <Icon icon="vaadin:plus"></Icon>
-        </Button>
-        <FormLayout>
-          <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
-          <TextField label="Description" {...field(model.description)} />
-          <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
-          <LocalizedDatePicker
-            autoselect
-            autoOpenDisabled
-            label="Deadline"
-            language="fi"
-            helperText="Finnish format"
-            {...field(model.deadline)}
-          />
-        </FormLayout>
-        <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
-        <FormButtons />
-      </div>
-      <div className="m-m shadow-s p-s">
-        <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
-        <Button theme="error" className="mt-m" disabled={noDone()} onClick={remove}>
-          Remove<Tooltip position="end-bottom" slot="tooltip" text="Remove todos that are done"></Tooltip>
-        </Button>
+      <div className="h-full flex flex-col">
+        <div className="grid gap-m shadow-s m-m p-s">
+          <Button style={{ width: '60px' }} id="new" onClick={() => addNew()}>
+            <Icon icon="vaadin:plus"></Icon>
+            <Tooltip position="end-bottom" slot="tooltip" text="Add new todo"></Tooltip>
+          </Button>
+          <FormLayout>
+            <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
+            <TextArea label="Description" {...field(model.description)} />
+            <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
+            <LocalizedDatePicker
+              autoselect
+              autoOpenDisabled
+              label="Deadline"
+              language="fi"
+              helperText="Finnish format"
+              {...field(model.deadline)}
+            />
+          </FormLayout>
+          <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
+          <FormButtons />
+        </div>
+        <div className="flex flex-col m-m shadow-s p-s flex-grow">
+          <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
+          <Button theme="error" className="mt-m" disabled={noDone()} onClick={remove}>
+            Remove<Tooltip position="end-bottom" slot="tooltip" text="Remove todos that are done"></Tooltip>
+          </Button>
+        </div>
       </div>
     </>
   );

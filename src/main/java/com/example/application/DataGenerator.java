@@ -1,5 +1,6 @@
 package com.example.application;
 
+import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -19,7 +20,7 @@ import com.vaadin.exampledata.ExampleDataGenerator;
 public class DataGenerator {
 
     @Bean
-    public CommandLineRunner loadData(ContactRepository contactRepository) {
+    public CommandLineRunner loadData(ContactRepository contactRepository, TodoRepository todoRepository) {
 
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
@@ -50,6 +51,16 @@ public class DataGenerator {
             });
 
             contactRepository.saveAll(contacts);
+
+            var todoGenerator = new ExampleDataGenerator<>(Todo.class, LocalDateTime.now());
+            todoGenerator.setData(Todo::setTask, DataType.TWO_WORDS);
+            todoGenerator.setData(Todo::setDescription, DataType.SENTENCE);
+
+            var todos = todoGenerator.create(123, seed).stream().map(todo -> {
+                return todo;
+            }).collect(Collectors.toList());
+
+            todoRepository.saveAll(todos);
 
             logger.info("Generated demo data");
         };
