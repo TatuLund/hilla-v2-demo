@@ -1,5 +1,8 @@
 package com.example.application;
 
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
@@ -13,6 +16,7 @@ public class StatsEndpoint {
 
     public static class Stats {
         public @Nonnull Integer[] priorityCounts = new Integer[5];
+        public @Nonnull Map<LocalDate, Integer> deadlines = new TreeMap<>();
         public @Nonnull Integer assigned = 0;
         public @Nonnull Integer done = 0;
     }
@@ -36,8 +40,18 @@ public class StatsEndpoint {
                 .collect(Collectors.toList()).size();
         stats.priorityCounts[4] = todos.stream().filter(t -> t.getPriority() != null && t.getPriority() == 5)
                 .collect(Collectors.toList()).size();
+
+        todos.stream().filter(t -> t.getDeadline() != null).forEach(t -> {
+            if (stats.deadlines.containsKey(t.getDeadline())) {
+                stats.deadlines.put(t.getDeadline(), stats.deadlines.get(t.getDeadline()) + 1);
+            } else {
+                stats.deadlines.put(t.getDeadline(), 1);
+            }
+        });
+
         stats.assigned = todos.stream().filter(t -> t.getAssigned() != null).collect(Collectors.toList()).size();
         stats.done = todos.stream().filter(t -> t.isDone()).collect(Collectors.toList()).size();
+
         return stats;
     }
 }

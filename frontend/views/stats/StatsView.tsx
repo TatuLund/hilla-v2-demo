@@ -9,7 +9,7 @@ import { Subscription } from '@hilla/frontend';
 import Message from 'Frontend/generated/com/example/application/EventService/Message';
 
 function useStats() {
-  const [stats, setStats] = useState<Stats>({ priorityCounts: [0, 0, 0, 0, 0], assigned: 0, done: 0 });
+  const [stats, setStats] = useState<Stats>({ priorityCounts: [0, 0, 0, 0, 0], deadlines: {}, assigned: 0, done: 0 });
   const [subscription, setSubscription] = useState<Subscription<Message>>();
 
   useEffect(() => {
@@ -34,11 +34,22 @@ function useStats() {
     };
   }, []);
 
-  return [stats] as const;
+  function deadlineDates(): string[] {
+    return Object.keys(stats.deadlines).map((key) => {
+      const date = new Date(key);
+      return date.toDateString();
+    });
+  }
+
+  function deadlineCounts(): number[] {
+    return Object.values(stats.deadlines).map((count) => (count ? count : 0));
+  }
+
+  return [stats, deadlineDates, deadlineCounts] as const;
 }
 
 export default function StatsView() {
-  const [stats] = useStats();
+  const [stats, deadlineDates, deadlineCounts] = useStats();
 
   return (
     <>
@@ -60,6 +71,9 @@ export default function StatsView() {
           <ChartSeries title="Done" type="column" values={[{ name: 'Done', y: stats?.done }]}></ChartSeries>
         </Chart>
       </div>
+      <Chart type="line" key="deadlines" title="Deadlines" categories={deadlineDates()}>
+        <ChartSeries title="Deadlines" values={deadlineCounts()}></ChartSeries>
+      </Chart>
     </>
   );
 }
