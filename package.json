@@ -21,7 +21,6 @@
     "@polymer/polymer": "3.5.1",
     "@vaadin/bundles": "24.2.0-rc1",
     "@vaadin/common-frontend": "0.0.18",
-    "@vaadin/icons": "24.1.6",
     "@vaadin/router": "1.7.5",
     "classnames": "^2.3.2",
     "construct-style-sheets-polyfill": "3.1.0",
@@ -82,7 +81,6 @@
     "@hilla/react-form": "$@hilla/react-form",
     "line-awesome": "$line-awesome",
     "date-fns": "$date-fns",
-    "@vaadin/icons": "$@vaadin/icons",
     "@hilla/react-auth": "$@hilla/react-auth",
     "@hilla/generator-typescript-plugin-subtypes": "$@hilla/generator-typescript-plugin-subtypes",
     "@hilla/react-crud": "$@hilla/react-crud"
@@ -128,6 +126,6 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "75bd20078658eac841001dd35699f692a5cce9ac9d74154e7d064bf956e5af82"
+    "hash": "ba20fb968ce1047700ef667d5525ac56e43a0d18a39fb2cf0b096f6f51ae2c34"
   }
 }

@@ -51,7 +51,9 @@ function createAuthenticateThunk(dispatch: Dispatch<LoginActions>) {
     const userInfo = await UserEndpoint.getAuthenticatedUser();
     if (userInfo) {
       const profilePictureUrl = `data:image;base64,${btoa(
-        userInfo.profilePicture.reduce((str, n) => str + String.fromCharCode((n + 256) % 256), '')
+        userInfo.profilePicture
+          ? userInfo.profilePicture.reduce((str, n) => str + String.fromCharCode((n + 256) % 256), '')
+          : ''
       )}`;
       const user = {
         ...userInfo,

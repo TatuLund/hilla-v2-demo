@@ -3,6 +3,7 @@ import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { ComboBox } from '@hilla/react-components/ComboBox.js';
 import { TextField } from '@hilla/react-components/TextField.js';
 import { Icon } from '@hilla/react-components/Icon.js';
+import '@vaadin/icons';
 import { IntegerField } from '@hilla/react-components/IntegerField.js';
 import { Button } from '@hilla/react-components/Button.js';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
@@ -53,7 +54,7 @@ export default function TodoView(): JSX.Element {
       <div className="h-full flex flex-col">
         <div className="grid gap-m shadow-s m-m p-s">
           <Button style={{ width: '60px' }} id="new" onClick={() => addNew()}>
-            <Icon icon="vaadin:plus"></Icon>Add
+            <Icon icon="vaadin:plus"></Icon>
             <Tooltip position="end-bottom" slot="tooltip" text="Add new todo"></Tooltip>
           </Button>
           <FormLayout>
