@@ -7,18 +7,20 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.application.data.Todo;
 import com.example.application.data.TodoRepository;
 import com.example.application.services.EventService.Message;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import dev.hilla.BrowserCallable;
 import dev.hilla.Nonnull;
 import dev.hilla.exception.EndpointException;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
 @BrowserCallable
-@AnonymousAllowed
+@PermitAll
 public class TodoEndpoint {
 
   Logger logger = LoggerFactory.getLogger(TodoEndpoint.class);
@@ -31,16 +33,22 @@ public class TodoEndpoint {
     this.eventService = eventService;
   }
 
+  @Transactional
   public @Nonnull List<@Nonnull Todo> findAll() {
+    try {
+      Thread.sleep(400);
+    } catch (InterruptedException e) {
+    }
     return repository.findAll();
   }
 
+  @Transactional
   public Todo save(Todo todo) {
     Todo result;
     Optional<Todo> old;
 
     if (todo.getId() != null) {
-      old = repository.findById(todo.getId());
+      old = repository.findById(todo.getId());      
     } else {
       old = Optional.empty();
     }
@@ -60,7 +68,19 @@ public class TodoEndpoint {
         throw new EndpointException("Assignee " + todo.getAssigned().getId() + " already has a todo!");
       }
     }
-    result = repository.save(todo);
+    
+    if (old.isPresent()) {
+      Todo updated = old.get();
+      updated.setAssigned(todo.getAssigned());
+      updated.setDeadline(todo.getDeadline());
+      updated.setDone(todo.isDone());
+      updated.setPriority(todo.getPriority());
+      updated.setTask(todo.getTask());
+      updated.setDescription(todo.getDescription());
+      result = repository.save(updated);
+    } else {
+      result = repository.save(todo);
+    }
     logger.info(message.data);
     eventService.send(message);
     return result;
@@ -78,7 +98,7 @@ public class TodoEndpoint {
 
   private boolean isAssigneOccupied(Todo todo) {
     try {
-      Thread.sleep(1000);
+      Thread.sleep(400);
     } catch (InterruptedException e) {
     }
     List<Todo> todos = repository.findAll();
@@ -88,12 +108,15 @@ public class TodoEndpoint {
     return match;
   }
 
+  @Transactional
+  @RolesAllowed("ADMIN")
   public void remove(List<Todo> todos) {
     Message message = new Message();
     message.data = "Todos: " + todos.stream().map(todo -> "" + todo.getId()).collect(Collectors.joining(","))
         + " removed!";
     logger.info(message.data);
-    repository.deleteAll(todos);
+    todos.stream().map(t1 -> repository.findById(t1.getId())).filter(Optional::isPresent).map(Optional::get)
+        .forEach(t -> repository.delete(t));
     eventService.send(message);
   }
 }

@@ -7,6 +7,7 @@ import jakarta.annotation.security.RolesAllowed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.application.data.Contact;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
@@ -34,6 +35,7 @@ public class ContactEndpoint {
     }
 
     @Nonnull
+    @Transactional
     public PageResponse getPage(int page, int pageSize, String filter, String direction) {
         try {
             Thread.sleep(200);
@@ -47,6 +49,7 @@ public class ContactEndpoint {
         return response;
     }
     
+    @Transactional
     public long getCount() {
         try {
             Thread.sleep(200);
@@ -59,6 +62,7 @@ public class ContactEndpoint {
     // using browser devtools, etc.
     @Nonnull
     @RolesAllowed("ADMIN")
+    @Transactional
     public Contact saveContact(Contact contact) {
         // Only use the id of the company, we don't want to update anything else on
         // Company.
@@ -69,6 +73,7 @@ public class ContactEndpoint {
     // Secure endpoint method for ADMIN users only as user can re-enable buttons
     // using browser devtools, etc.
     @RolesAllowed("ADMIN")
+    @Transactional
     public void deleteContact(Integer contactId) {
         logger.info("Deleting contact: "+contactId);
         contactService.deleteContact(contactId);

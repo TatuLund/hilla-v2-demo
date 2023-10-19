@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * The entry point of the Spring Boot application.
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Bean;
  *
  */
 @SpringBootApplication
+@EnableTransactionManagement
 @Theme(value = "hilla-todo")
 public class Application implements AppShellConfigurator {
 

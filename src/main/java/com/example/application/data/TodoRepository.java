@@ -1,7 +1,8 @@
 package com.example.application.data;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface TodoRepository extends JpaRepository<Todo, Integer> {
+public interface TodoRepository extends JpaRepository<Todo, Integer>, JpaSpecificationExecutor<Todo> {
 
 }
