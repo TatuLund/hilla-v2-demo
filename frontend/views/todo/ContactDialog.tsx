@@ -2,7 +2,7 @@ import { Grid, GridSorterDirection } from '@hilla/react-components/Grid.js';
 import { GridDataProviderCallback, GridDataProviderParams } from '@vaadin/grid';
 import { GridColumn } from '@hilla/react-components/GridColumn.js';
 import { GridSortColumn } from '@hilla/react-components/GridSortColumn.js';
-import Contact from 'Frontend/generated/com/example/application/Contact';
+import Contact from 'Frontend/generated/com/example/application/data/Contact';
 import { Dialog } from '@hilla/react-components/Dialog.js';
 import { ContactEndpoint } from 'Frontend/generated/endpoints';
 import { TextField } from '@hilla/react-components/TextField.js';

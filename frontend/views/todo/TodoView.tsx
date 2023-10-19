@@ -1,9 +1,8 @@
-import type Contact from 'Frontend/generated/com/example/application/Contact';
+import type Contact from 'Frontend/generated/com/example/application/data/Contact';
 import { FormLayout } from '@hilla/react-components/FormLayout.js';
 import { ComboBox } from '@hilla/react-components/ComboBox.js';
-import { TextArea } from '@hilla/react-components/TextArea.js';
+import { TextField } from '@hilla/react-components/TextField.js';
 import { Icon } from '@hilla/react-components/Icon.js';
-import '@vaadin/icons';
 import { IntegerField } from '@hilla/react-components/IntegerField.js';
 import { Button } from '@hilla/react-components/Button.js';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
@@ -54,12 +53,12 @@ export default function TodoView(): JSX.Element {
       <div className="h-full flex flex-col">
         <div className="grid gap-m shadow-s m-m p-s">
           <Button style={{ width: '60px' }} id="new" onClick={() => addNew()}>
-            <Icon icon="vaadin:plus"></Icon>
+            <Icon icon="vaadin:plus"></Icon>Add
             <Tooltip position="end-bottom" slot="tooltip" text="Add new todo"></Tooltip>
           </Button>
           <FormLayout>
             <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
-            <TextArea label="Description" {...field(model.description)} />
+            <TextField label="Description" {...field(model.description)} />
             <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
             <LocalizedDatePicker
               autoselect

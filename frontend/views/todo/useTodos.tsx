@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useForm } from '@hilla/react-form';
 import { EventEndpoint, TodoEndpoint } from 'Frontend/generated/endpoints';
 import { EndpointError, Subscription } from '@hilla/frontend';
-import type Todo from 'Frontend/generated/com/example/application/Todo';
+import type Todo from 'Frontend/generated/com/example/application/data/Todo';
 import { Notification } from '@hilla/react-components/Notification.js';
-import Message from 'Frontend/generated/com/example/application/EventService/Message';
-import TodoModel from 'Frontend/generated/com/example/application/TodoModel';
-import MessageType from 'Frontend/generated/com/example/application/EventService/MessageType';
+import Message from 'Frontend/generated/com/example/application/services/EventService/Message';
+import TodoModel from 'Frontend/generated/com/example/application/data/TodoModel';
+import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.

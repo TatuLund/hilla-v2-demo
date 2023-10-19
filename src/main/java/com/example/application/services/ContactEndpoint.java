@@ -1,13 +1,13 @@
-package com.example.application;
+package com.example.application.services;
 
 import java.util.List;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.example.application.data.Contact;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import dev.hilla.BrowserCallable;

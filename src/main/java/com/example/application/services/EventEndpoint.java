@@ -1,17 +1,17 @@
-package com.example.application;
+package com.example.application.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.application.EventService.Message;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.example.application.services.EventService.Message;
 
 import dev.hilla.BrowserCallable;
 import dev.hilla.EndpointSubscription;
 import dev.hilla.Nonnull;
+import jakarta.annotation.security.PermitAll;
 import reactor.core.publisher.Flux;
 
-@AnonymousAllowed
+@PermitAll
 @BrowserCallable
 public class EventEndpoint {
 

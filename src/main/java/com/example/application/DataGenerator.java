@@ -1,6 +1,5 @@
 package com.example.application;
 
-import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -13,6 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+
+import com.example.application.data.Contact;
+import com.example.application.data.ContactRepository;
+import com.example.application.data.Todo;
+import com.example.application.data.TodoRepository;
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
 

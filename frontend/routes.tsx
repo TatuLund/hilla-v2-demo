@@ -1,6 +1,7 @@
 import MainLayout from 'Frontend/views/MainLayout.js';
 import { lazy } from 'react';
 import { createBrowserRouter, IndexRouteObject, NonIndexRouteObject, useMatches } from 'react-router-dom';
+import LoginView from './views/LoginView';
 
 const TodoView = lazy(async () => import('Frontend/views/todo/TodoView.js'));
 const StatsView = lazy(async () => import('Frontend/views/stats/StatsView.js'));
@@ -35,9 +36,14 @@ export const routes: readonly ViewRouteObject[] = [
     handle: { icon: 'null', title: 'Main' },
     children: [
       { path: '/', element: <TodoView />, handle: { icon: 'la la-list-alt', title: 'Todo' } },
-      { path: '/stats', element: <StatsView />, handle: { icon: 'la la-list-alt', title: 'Stats' } },
+      { path: '/stats', element: <StatsView />, handle: { icon: 'la la-chart-line', title: 'Stats' } },
     ],
   },
+  {
+    element: <LoginView />,
+    handle: { icon: 'null', title: 'Login' },
+    path: '/login',
+  }
 ];
 
 const router = createBrowserRouter([...routes]);

@@ -1,10 +1,13 @@
-package com.example.application;
+package com.example.application.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.application.data.Contact;
+import com.example.application.data.ContactRepository;
 
 @Service
 public class ContactService {

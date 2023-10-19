@@ -1,4 +1,4 @@
-package com.example.application;
+package com.example.application.data;
 
 import java.time.LocalDate;
 
@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 
 import dev.hilla.Nonnull;
 

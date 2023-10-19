@@ -1,4 +1,4 @@
-import type Todo from 'Frontend/generated/com/example/application/Todo';
+import type Todo from 'Frontend/generated/com/example/application/data/Todo';
 import { Checkbox } from '@hilla/react-components/Checkbox.js';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import Badge from 'Frontend/components/badge/Badge';

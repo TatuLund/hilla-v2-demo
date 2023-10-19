@@ -1,17 +1,18 @@
-package com.example.application;
+package com.example.application.services;
 
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.example.application.data.TodoRepository;
 
 import dev.hilla.BrowserCallable;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.security.PermitAll;
 
 @BrowserCallable
-@AnonymousAllowed
+@PermitAll
 public class StatsEndpoint {
 
     public static class Stats {

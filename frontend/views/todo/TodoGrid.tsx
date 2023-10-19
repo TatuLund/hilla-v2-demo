@@ -1,4 +1,4 @@
-import type Todo from 'Frontend/generated/com/example/application/Todo';
+import type Todo from 'Frontend/generated/com/example/application/data/Todo';
 import { TodoItem } from './TodoItem';
 
 type Props = {

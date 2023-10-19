@@ -1,4 +1,4 @@
-package com.example.application;
+package com.example.application.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +8,9 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.application.EventService.Message;
-import com.google.common.base.Objects;
+import com.example.application.data.Todo;
+import com.example.application.data.TodoRepository;
+import com.example.application.services.EventService.Message;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import dev.hilla.BrowserCallable;

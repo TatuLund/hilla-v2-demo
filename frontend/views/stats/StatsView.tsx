@@ -1,12 +1,12 @@
 import { Chart } from '@hilla/react-components/Chart.js';
 import { ChartSeries } from '@hilla/react-components/ChartSeries.js';
-import MessageType from 'Frontend/generated/com/example/application/EventService/MessageType';
-import Stats from 'Frontend/generated/com/example/application/StatsEndpoint/Stats';
+import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
+import Stats from 'Frontend/generated/com/example/application/services/StatsEndpoint/Stats';
 import { EventEndpoint, StatsEndpoint } from 'Frontend/generated/endpoints';
 import { useEffect, useState } from 'react';
 import { Notification } from '@hilla/react-components/Notification.js';
 import { Subscription } from '@hilla/frontend';
-import Message from 'Frontend/generated/com/example/application/EventService/Message';
+import Message from 'Frontend/generated/com/example/application/services/EventService/Message';
 
 function useStats() {
   const [stats, setStats] = useState<Stats>({ priorityCounts: [0, 0, 0, 0, 0], deadlines: {}, assigned: 0, done: 0 });
