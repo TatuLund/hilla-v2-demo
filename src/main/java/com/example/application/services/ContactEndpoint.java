@@ -2,6 +2,7 @@ package com.example.application.services;
 
 import java.util.List;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import dev.hilla.BrowserCallable;
 import dev.hilla.Nonnull;
 
 @BrowserCallable
-@AnonymousAllowed 
+@PermitAll
 public class ContactEndpoint {
 
     private ContactService contactService;

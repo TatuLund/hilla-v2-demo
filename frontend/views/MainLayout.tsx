@@ -8,7 +8,7 @@ import { AuthContext } from 'Frontend/useAuth.js';
 import { useRouteMetadata } from 'Frontend/util/routing';
 import { Suspense, useContext } from 'react';
 import { Item } from '@hilla/react-components/Item.js';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/routes.js';
 import css from './MainLayout.module.css';
 
@@ -26,9 +26,10 @@ export default function MainLayout() {
   const currentTitle = useRouteMetadata()?.title ?? 'My App';
   const menuRoutes = (routes[0]?.children || []).filter(
     (route) => route.path && route.handle && route.handle.icon && route.handle.title
-  ) as readonly MenuRoute[];  
+  ) as readonly MenuRoute[];
   const { state, unauthenticate } = useContext(AuthContext);
   const matches = useViewMatches();
+  const navigate = useNavigate();
 
   return (
     <AppLayout primarySection="drawer">
@@ -36,20 +37,20 @@ export default function MainLayout() {
         <header className="flex flex-col gap-m">
           <h1 className="text-l m-0">My App</h1>
           <nav>
-          {menuRoutes.map(({ path, handle: { icon, title } }) => (
-            <NavLink
-              className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`}
-              key={path}
-              to={path}
-            >
-              {({ isActive }) => (
-                <Item key={path} selected={isActive}>
-                  <span className={`${icon} ${css.navicon}`} aria-hidden="true"></span>
-                  {title}
-                </Item>
-              )}
-            </NavLink>
-          ))}
+            {menuRoutes.map(({ path, handle: { icon, title } }) => (
+              <NavLink
+                className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`}
+                key={path}
+                to={path}
+              >
+                {({ isActive }) => (
+                  <Item key={path} selected={isActive}>
+                    <span className={`${icon} ${css.navicon}`} aria-hidden="true"></span>
+                    {title}
+                  </Item>
+                )}
+              </NavLink>
+            ))}
           </nav>
         </header>
         <footer className="flex flex-col gap-s">
@@ -59,7 +60,14 @@ export default function MainLayout() {
                 <Avatar theme="xsmall" img={state.user.profilePictureUrl} name={state.user.name} />
                 {state.user.name}
               </div>
-              <Button onClick={async () => logout(unauthenticate)}>Sign out</Button>
+              <Button
+                onClick={async () => {
+                  logout(unauthenticate);
+                  navigate('/login');
+                }}
+              >
+                Sign out
+              </Button>
             </>
           ) : (
             <a href="/login">Sign in</a>
