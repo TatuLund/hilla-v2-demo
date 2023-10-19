@@ -12,7 +12,7 @@ const loginI18nDefault: LoginI18n = {
     submit: 'Log in',
     forgotPassword: 'Forgot password',
   },
-  header: { title: 'hilla-with-auth-22-12-20', description: 'Login using user/user or admin/admin' },
+  header: { title: 'My App', description: 'Login using user/user or admin/admin' },
   errorMessage: {
     title: 'Incorrect username or password',
     message: 'Check that you have entered the correct username and password and try again.',
