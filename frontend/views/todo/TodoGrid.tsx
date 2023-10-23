@@ -11,7 +11,7 @@ type Props = {
 export function TodoGrid({ todos, onChangeStatus, onClick }: Props): JSX.Element {
   return (
     <>
-      <div style={{height : "300px"}} className="p-m grid grid-cols-6 gap-s overflow-auto flex-grow">
+      <div style={{height : "300px"}} className="p-m grid grid-cols-3 lg:grid-cols-6 gap-s overflow-auto flex-grow">
         <GridHeader />
         {todos.map((todo) => (
           <TodoItem
@@ -31,11 +31,10 @@ function GridHeader() {
     <>
       <span>Done</span>
       <span>Task</span>
-      <span>Description</span>
-      <span>Assigned</span>
-      <span>Deadline</span>
+      <span className="hidden lg:flex">Description</span>
+      <span className="hidden lg:flex">Assigned</span>
+      <span className="hidden lg:flex">Deadline</span>
       <span className="text-right">Priority</span>
-      <hr className="col-span-6"></hr>
     </>
   );
 }
