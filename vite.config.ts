@@ -11,10 +11,6 @@ const customConfig: UserConfigFn = (env) => ({
       include: '**/*.tsx',
     }),
   ],
-  test: {
-    environment: 'jsdom',
-    root: './tests',
-  },
 });
 
 export default defineConfig(overrideVaadinConfig(customConfig));

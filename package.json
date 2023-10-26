@@ -36,14 +36,17 @@
     "@rollup/plugin-replace": "5.0.2",
     "@rollup/pluginutils": "5.0.2",
     "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.1",
     "@types/jsdom": "^21.1.2",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "4.0.4",
+    "@vitest/browser": "^0.34.6",
     "async": "3.2.4",
     "glob": "10.3.3",
     "jsdom": "^22.1.0",
     "npm-dedupe": "^2.0.0",
+    "pretty-format": "^29.7.0",
     "rollup-plugin-brotli": "3.1.0",
     "rollup-plugin-visualizer": "5.9.2",
     "strip-css-comments": "5.0.0",
@@ -51,7 +54,8 @@
     "typescript": "5.1.6",
     "vite": "4.4.11",
     "vite-plugin-checker": "0.6.1",
-    "vitest": "^0.34.3",
+    "vitest": "^0.34.6",
+    "webdriverio": "^8.20.4",
     "workbox-build": "7.0.0",
     "workbox-core": "7.0.0",
     "workbox-precaching": "7.0.0"
@@ -127,5 +131,8 @@
       "workbox-precaching": "7.0.0"
     },
     "hash": "ba20fb968ce1047700ef667d5525ac56e43a0d18a39fb2cf0b096f6f51ae2c34"
+  },
+  "scripts": {
+    "test": "vitest"
   }
 }
