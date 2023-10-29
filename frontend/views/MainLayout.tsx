@@ -10,6 +10,8 @@ import { Item } from '@hilla/react-components/Item.js';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/routes.js';
 import css from './MainLayout.module.css';
+import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
+import { Tooltip } from '@hilla/react-components/Tooltip.js';
 
 type MenuRoute = ViewRouteObject &
   Readonly<{
@@ -20,6 +22,13 @@ type MenuRoute = ViewRouteObject &
 const navLinkClasses = ({ isActive }: any) => {
   return `block rounded-m p-s ${isActive ? 'bg-primary-10 text-primary' : 'text-body'}`;
 };
+
+function profilePictureUrl(userInfo: UserInfo): string {
+  const profilePictureUrl = `data:image;base64,${btoa(
+    userInfo.picture ? userInfo.picture.reduce((str, n) => str + String.fromCharCode((n + 256) % 256), '') : ''
+  )}`;
+  return profilePictureUrl;
+}
 
 export default function MainLayout() {
   const currentTitle = useRouteMetadata()?.title ?? 'My App';
@@ -56,8 +65,10 @@ export default function MainLayout() {
           {state.user ? (
             <>
               <div className="flex items-center gap-s">
-                <Avatar theme="xsmall" name={state.user.name} />
-                {state.user.name}
+                <Avatar id="avatar" theme="xsmall" img={profilePictureUrl(state.user)} name={state.user.fullName}>
+                  <Tooltip for="avatar" text={state.user.name} />
+                </Avatar>
+                {state.user.fullName}
               </div>
               <Button
                 onClick={async () => {

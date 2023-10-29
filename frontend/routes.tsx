@@ -1,7 +1,8 @@
 import MainLayout from 'Frontend/views/MainLayout.js';
 import { lazy } from 'react';
-import { createBrowserRouter, IndexRouteObject, NonIndexRouteObject, useMatches } from 'react-router-dom';
+import { createBrowserRouter, IndexRouteObject, NonIndexRouteObject, RouteObject, useMatches } from 'react-router-dom';
 import LoginView from './views/LoginView';
+import { protectRoutes } from '@hilla/react-auth';
 
 const TodoView = lazy(async () => import('Frontend/views/todo/TodoView.js'));
 const StatsView = lazy(async () => import('Frontend/views/stats/StatsView.js'));
@@ -31,7 +32,7 @@ export type ViewRouteMatch = Readonly<Override<RouteMatch, ViewMeta>>;
 
 export const useViewMatches = useMatches as () => readonly ViewRouteMatch[];
 
-export const routes: readonly ViewRouteObject[] = [
+export const routes: readonly RouteObject[] = protectRoutes([
   {
     element: <MainLayout />,
     handle: { icon: 'null', title: 'Main' },
@@ -45,8 +46,8 @@ export const routes: readonly ViewRouteObject[] = [
     element: <LoginView />,
     handle: { icon: 'null', title: 'Login' },
     path: '/login',
-  }
-];
+  },
+]);
 
 const router = createBrowserRouter([...routes]);
 export default router;
