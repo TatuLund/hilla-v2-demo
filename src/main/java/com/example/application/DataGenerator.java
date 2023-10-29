@@ -1,9 +1,11 @@
 package com.example.application;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -61,7 +63,18 @@ public class DataGenerator {
             todoGenerator.setData(Todo::setDescription, DataType.SENTENCE);
             todoGenerator.setData(Todo::setDone, DataType.BOOLEAN_10_90);
 
+            Random rand = new Random(seed);
+            AtomicInteger id = new AtomicInteger(0);
             var todos = todoGenerator.create(123, seed).stream().map(todo -> {
+                var deadLine = LocalDate.now().plusDays(1 + rand.nextInt(7));
+                todo.setDeadline(deadLine);
+                int prio = (int) Math.floor(Math.abs(rand.nextGaussian()) * 2);
+                if (prio > 0) {
+                    todo.setPriority(prio);
+                }
+                if (prio > 2 || todo.isDone()) {
+                    todo.setAssigned(contacts.get(id.getAndIncrement()));
+                }
                 return todo;
             }).collect(Collectors.toList());
 
