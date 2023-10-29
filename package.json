@@ -130,7 +130,7 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "ba20fb968ce1047700ef667d5525ac56e43a0d18a39fb2cf0b096f6f51ae2c34"
+    "hash": "1cfe9f31ee0513cd0c6a05b727cc377181ecdc8df8bb46cf3406fddb8257d843"
   },
   "scripts": {
     "test": "vitest"

@@ -1,12 +1,11 @@
 import router from 'Frontend/routes.js';
-import { AuthContext, useAuth } from 'Frontend/useAuth.js';
 import { RouterProvider } from 'react-router-dom';
+import { AuthProvider } from 'Frontend/auth.js';
 
 export default function App() {
-  const auth = useAuth();
   return (
-    <AuthContext.Provider value={auth}>
+    <AuthProvider>
       <RouterProvider router={router} />
-    </AuthContext.Provider>
+    </AuthProvider>
   );
 }

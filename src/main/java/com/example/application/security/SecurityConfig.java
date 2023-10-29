@@ -59,7 +59,7 @@ public class SecurityConfig extends VaadinWebSecurity {
         http.sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // Register your login view to the view access checker mechanism
-        setLoginView(http, "/login", "/");
+        setLoginView(http, "/login");
 
         // Enable stateless authentication
         setStatelessAuthentication(http,

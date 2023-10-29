@@ -2,11 +2,10 @@ import { AppLayout } from '@hilla/react-components/AppLayout.js';
 import { Avatar } from '@hilla/react-components/Avatar.js';
 import { Button } from '@hilla/react-components/Button.js';
 import { DrawerToggle } from '@hilla/react-components/DrawerToggle.js';
-import { logout } from 'Frontend/auth.js';
+import { useAuth } from 'Frontend/auth.js';
 import Placeholder from 'Frontend/components/placeholder/Placeholder';
-import { AuthContext } from 'Frontend/useAuth.js';
 import { useRouteMetadata } from 'Frontend/util/routing';
-import { Suspense, useContext } from 'react';
+import { Suspense } from 'react';
 import { Item } from '@hilla/react-components/Item.js';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/routes.js';
@@ -27,9 +26,9 @@ export default function MainLayout() {
   const menuRoutes = (routes[0]?.children || []).filter(
     (route) => route.path && route.handle && route.handle.icon && route.handle.title
   ) as readonly MenuRoute[];
-  const { state, unauthenticate } = useContext(AuthContext);
   const matches = useViewMatches();
   const navigate = useNavigate();
+  const { state, logout } = useAuth();
 
   return (
     <AppLayout primarySection="drawer">
@@ -57,12 +56,12 @@ export default function MainLayout() {
           {state.user ? (
             <>
               <div className="flex items-center gap-s">
-                <Avatar theme="xsmall" img={state.user.profilePictureUrl} name={state.user.name} />
+                <Avatar theme="xsmall" name={state.user.name} />
                 {state.user.name}
               </div>
               <Button
                 onClick={async () => {
-                  logout(unauthenticate);
+                  logout();
                   navigate('/login');
                 }}
               >

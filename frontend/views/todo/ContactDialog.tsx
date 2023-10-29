@@ -89,7 +89,7 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
         onOpenedChanged={({ detail: { value } }) => setFilter('')}
         footer={<FooterCotent />}
       >
-        <Grid
+        <Grid<Contact>
           ref={(element) => {
             setTimeout(() => {
               // Use setTimeout to wait for the Grid to be rendered
@@ -101,7 +101,7 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
           onActiveItemChanged={({ detail: { value } }) => setAssigned(value ? [value] : [])}
           dataProvider={dataProvider}
         >
-          <GridSortColumn
+          <GridSortColumn<Contact>
             direction={direction}
             // Use setDirection to change the direction of the sorter and trigger the dataProvider
             onDirectionChanged={(e) => setDirection(e.detail.value)}

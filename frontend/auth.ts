@@ -1,17 +1,10 @@
-import { login as _login, logout as _logout } from '@hilla/frontend';
-import { AuthenticateThunk, UnauthenticateThunk } from 'Frontend/useAuth.js';
+import { configureAuth } from '@hilla/react-auth';
+import { UserInfoService } from 'Frontend/generated/endpoints';
 
-export async function login(username: string, password: string, authenticate: AuthenticateThunk) {
-  const result = await _login(username, password);
+// Configure auth to use `UserInfoService.getUserInfo`
+const auth = configureAuth(UserInfoService.getUserInfo);
 
-  if (!result.error) {
-    await authenticate();
-  }
-
-  return result;
-}
-
-export async function logout(unauthenticate: UnauthenticateThunk) {
-  await _logout();
-  unauthenticate();
-}
+// Export auth provider and useAuth hook, which are automatically
+// typed to the result of `UserInfoService.getUserInfo`
+export const useAuth = auth.useAuth;
+export const AuthProvider = auth.AuthProvider;

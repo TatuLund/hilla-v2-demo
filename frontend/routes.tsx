@@ -5,6 +5,7 @@ import LoginView from './views/LoginView';
 
 const TodoView = lazy(async () => import('Frontend/views/todo/TodoView.js'));
 const StatsView = lazy(async () => import('Frontend/views/stats/StatsView.js'));
+const EditorView = lazy(async () => import('Frontend/views/stats/EditorView.js'));
 
 export type MenuProps = Readonly<{
   icon?: string;
@@ -37,6 +38,7 @@ export const routes: readonly ViewRouteObject[] = [
     children: [
       { path: '/', element: <TodoView />, handle: { icon: 'la la-list-alt', title: 'Todo' } },
       { path: '/stats', element: <StatsView />, handle: { icon: 'la la-chart-line', title: 'Stats' } },
+      { path: '/editor', element: <EditorView />, handle: { icon: 'la la-table', title: 'Editor' } },
     ],
   },
   {
