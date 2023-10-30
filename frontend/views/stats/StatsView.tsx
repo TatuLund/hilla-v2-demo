@@ -1,5 +1,6 @@
 import { Chart } from '@hilla/react-components/Chart.js';
 import { ChartSeries } from '@hilla/react-components/ChartSeries.js';
+import type { Options } from 'highcharts';
 import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
 import Stats from 'Frontend/generated/com/example/application/services/StatsEndpoint/Stats';
 import { EventEndpoint, StatsEndpoint } from 'Frontend/generated/endpoints';
@@ -48,13 +49,39 @@ function useStats() {
   return [stats, deadlineDates, deadlineCounts] as const;
 }
 
+// Options can be used for many kinds of advanced configuration settings
+// for VaadinChart. The VaadinChart has some attributes and
+// properties for quick configuration.
+function getChartOptions(): Options {
+  const options: Options = {
+    tooltip: {
+      formatter: function () {
+        return ( this.point.name ? this.point.name : this.point.category ) + ': <b>' + this.point.y + '</b>';
+      },
+    },
+    yAxis: {
+      title: {
+        text: 'Count',
+      },
+    },
+    plotOptions: {
+      series: {
+        animation: {
+          duration: 100,
+        },
+      },
+    },
+  };
+  return options;
+}
+
 export default function StatsView() {
   const [stats, deadlineDates, deadlineCounts] = useStats();
 
   return (
     <>
       <div className="flex flex-row">
-        <Chart key="priorities" title="Priorities">
+        <Chart additionalOptions={getChartOptions()} key="priorities" title="Priorities">
           <ChartSeries
             type="pie"
             values={[
@@ -66,12 +93,18 @@ export default function StatsView() {
             ]}
           ></ChartSeries>
         </Chart>
-        <Chart key="status" title="Status">
+        <Chart additionalOptions={getChartOptions()} key="status" title="Status">
           <ChartSeries title="Assigned" type="column" values={[{ name: 'Assigned', y: stats?.assigned }]}></ChartSeries>{' '}
           <ChartSeries title="Done" type="column" values={[{ name: 'Done', y: stats?.done }]}></ChartSeries>
         </Chart>
       </div>
-      <Chart type="line" key="deadlines" title="Deadlines" categories={deadlineDates()}>
+      <Chart
+        additionalOptions={getChartOptions()}
+        type="line"
+        key="deadlines"
+        title="Deadlines"
+        categories={deadlineDates()}
+      >
         <ChartSeries title="Deadlines" values={deadlineCounts()}></ChartSeries>
       </Chart>
     </>
