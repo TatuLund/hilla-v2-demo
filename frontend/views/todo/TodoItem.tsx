@@ -23,8 +23,9 @@ export function TodoItem({ todo, onChangeStatus, onClick }: Props): JSX.Element 
         {todo.task}
       </span>
       <Tooltip position="start-bottom" for={'task-' + todo.id} text="Edit me"></Tooltip>
-      <span className="hidden lg:flex">
+      <span id={'desc-' + todo.id} className="hidden lg:flex">
         <span className="block w-full whitespace-nowrap overflow-ellipsis overflow-hidden">{todo.description}</span>
+        <Tooltip position="end-bottom" for={'desc-' + todo.id} text={todo.description}></Tooltip>
       </span>
       <span className={'hidden lg:flex ' + (todo.assigned ? '' : 'text-warning')}>
         {todo.assigned ? todo.assigned?.firstName + ' ' + todo.assigned?.lastName : 'unassigned'}
