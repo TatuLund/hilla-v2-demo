@@ -1,8 +1,8 @@
 import MainLayout from 'Frontend/views/MainLayout.js';
 import { lazy } from 'react';
-import { createBrowserRouter, IndexRouteObject, NonIndexRouteObject, RouteObject, useMatches } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useMatches } from 'react-router-dom';
 import LoginView from './views/LoginView';
-import { protectRoutes } from '@hilla/react-auth';
+import { protectRoutes, RouteObjectWithAuth } from '@hilla/react-auth';
 
 const TodoView = lazy(async () => import('Frontend/views/todo/TodoView.js'));
 const StatsView = lazy(async () => import('Frontend/views/stats/StatsView.js'));
@@ -17,14 +17,7 @@ export type ViewMeta = Readonly<{ handle?: MenuProps }>;
 
 type Override<T, E> = Omit<T, keyof E> & E;
 
-export type IndexViewRouteObject = Override<IndexRouteObject, ViewMeta>;
-export type NonIndexViewRouteObject = Override<
-  Override<NonIndexRouteObject, ViewMeta>,
-  {
-    children?: ViewRouteObject[];
-  }
->;
-export type ViewRouteObject = IndexViewRouteObject | NonIndexViewRouteObject;
+export type ViewRouteObject = Override<RouteObjectWithAuth, ViewMeta>;
 
 type RouteMatch = ReturnType<typeof useMatches> extends (infer T)[] ? T : never;
 
@@ -37,9 +30,17 @@ export const routes: readonly RouteObject[] = protectRoutes([
     element: <MainLayout />,
     handle: { icon: 'null', title: 'Main' },
     children: [
-      { path: '/', element: <TodoView />, handle: { icon: 'la la-list-alt', title: 'Todo' } },
-      { path: '/stats', element: <StatsView />, handle: { icon: 'la la-chart-line', title: 'Stats' } },
-      { path: '/editor', element: <EditorView />, handle: { icon: 'la la-table', title: 'Editor' } },
+      { path: '/', element: <TodoView />, handle: { icon: 'la la-list-alt', title: 'Todo', requiresLogin: true } },
+      {
+        path: '/stats',
+        element: <StatsView />,
+        handle: { icon: 'la la-chart-line', title: 'Stats', requiresLogin: true },
+      },
+      {
+        path: '/editor',
+        element: <EditorView />,
+        handle: { icon: 'la la-table', title: 'Editor', requiresLogin: true, rolesAllowed: ['ROLE_ADMIN'] },
+      },
     ],
   },
   {

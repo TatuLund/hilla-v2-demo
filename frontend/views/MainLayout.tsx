@@ -12,8 +12,9 @@ import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/rou
 import css from './MainLayout.module.css';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
+import { RouteObjectWithAuth } from '@hilla/react-auth';
 
-type MenuRoute = ViewRouteObject &
+type MenuRoute = RouteObjectWithAuth &
   Readonly<{
     path: string;
     handle: Required<MenuProps>;
@@ -37,7 +38,7 @@ export default function MainLayout() {
   ) as readonly MenuRoute[];
   const matches = useViewMatches();
   const navigate = useNavigate();
-  const { state, logout } = useAuth();
+  const { state, logout, hasAccess } = useAuth();
 
   return (
     <AppLayout primarySection="drawer">
@@ -45,20 +46,22 @@ export default function MainLayout() {
         <header className="flex flex-col gap-m">
           <h1 className="text-l m-0">My App</h1>
           <nav>
-            {menuRoutes.map(({ path, handle: { icon, title } }) => (
-              <NavLink
-                className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`}
-                key={path}
-                to={path}
-              >
-                {({ isActive }) => (
-                  <Item key={path} selected={isActive}>
-                    <span className={`${icon} ${css.navicon}`} aria-hidden="true"></span>
-                    {title}
-                  </Item>
-                )}
-              </NavLink>
-            ))}
+            {menuRoutes
+              // .filter((route) => hasAccess({ rolesAllowed: route.handle.rolesAllowed }))
+              .map(({ path, handle: { icon, title } }) => (
+                <NavLink
+                  className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`}
+                  key={path}
+                  to={path}
+                >
+                  {({ isActive }) => (
+                    <Item key={path} selected={isActive}>
+                      <span className={`${icon} ${css.navicon}`} aria-hidden="true"></span>
+                      {title}
+                    </Item>
+                  )}
+                </NavLink>
+              ))}
           </nav>
         </header>
         <footer className="flex flex-col gap-s">

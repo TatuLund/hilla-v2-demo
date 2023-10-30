@@ -12,11 +12,13 @@ import { ContactDialog } from './ContactDialog';
 import { LocalizedDatePicker } from '../../components/localizeddatepicker/LocalizedDatePicker';
 import { useState } from 'react';
 import { useTodos } from './useTodos';
+import { useAuth } from 'Frontend/auth';
 
 export default function TodoView(): JSX.Element {
   const [todos, adding, model, value, remove, addNew, changeStatus, edit, submit, field, invalid] = useTodos();
   const [dialogOpened, setDialogOpened] = useState(false);
   const [assigned, setAssigned] = useState<Contact>();
+  const { hasAccess } = useAuth();
   const presets = ['Make food', 'Clean the house', 'Do the groceries', 'Mow the lawn', 'Walk the dog'];
 
   function noDone(): boolean {
@@ -75,7 +77,7 @@ export default function TodoView(): JSX.Element {
         </div>
         <div className="flex flex-col m-m shadow-s p-s flex-grow">
           <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
-          <Button style={{ alignSelf: 'start' }} theme="error" className="mt-m" disabled={noDone()} onClick={remove}>
+          <Button style={{ alignSelf: 'start' }} theme="error" className="mt-m" disabled={noDone() || !hasAccess({rolesAllowed: ['ROLE_ADMIN']})} onClick={remove}>
             <Icon icon="vaadin:trash"></Icon>
             <Tooltip position="end-bottom" slot="tooltip" text="Remove todos that are done"></Tooltip>
           </Button>
