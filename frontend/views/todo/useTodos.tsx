@@ -53,8 +53,8 @@ export function useTodos() {
     var saved: Todo | undefined;
     try {
       saved = await TodoEndpoint.save(todo);
-    } catch (e) {
-      handleError(e);
+    } catch (error) {
+      handleError(error);
       return;
     }
     if (saved) {
@@ -97,9 +97,9 @@ export function useTodos() {
 
 // Handle errors from the backend, which are thrown as EndpointError with JSON message.
 // Backend performs validation.
-function handleError(e: unknown) {
-  if (e instanceof EndpointError) {
-    const json = JSON.parse(e.message);
+function handleError(error: unknown) {
+  if (error instanceof EndpointError) {
+    const json = JSON.parse(error.message);
     if (json.type == 'dev.hilla.exception.EndpointException') {
       Notification.show(json.message, { theme: 'error' });
       return;

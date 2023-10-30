@@ -73,7 +73,7 @@ public class TodoEndpoint {
 
         if (todo.getAssigned() != null && assignedChanged) {
             logger.info("Assignee changed to " + todo.getAssigned().getId() + " for todo " + todo.getId());
-            boolean match = isAssigneOccupied(todo);
+            boolean match = isAssigneeOccupied(todo);
             if (match) {
                 logger.warn("Assignee " + todo.getAssigned().getId() + " already has a todo!");
                 throw new EndpointException("Assignee " + todo.getAssigned().getId() + " already has a todo!");
@@ -119,7 +119,7 @@ public class TodoEndpoint {
         return true;
     }
 
-    private boolean isAssigneOccupied(Todo todo) {
+    private boolean isAssigneeOccupied(Todo todo) {
         try {
             Thread.sleep(400);
         } catch (InterruptedException e) {
