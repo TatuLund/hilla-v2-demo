@@ -39,7 +39,10 @@ export default function TodoView(): JSX.Element {
     return (
       <>
         <div className="flex">
-          <Button onClick={() => setDialogOpened(!dialogOpened)}>
+          <Button
+            disabled={!hasAccess({ rolesAllowed: ['ROLE_ADMIN'] })}
+            onClick={() => setDialogOpened(!dialogOpened)}
+          >
             {assigned ? assigned.firstName + ' ' + assigned.lastName : 'Assign'}
           </Button>
           <Button id="add" className="ml-auto" theme="primary" disabled={invalid} onClick={submit}>
@@ -77,7 +80,13 @@ export default function TodoView(): JSX.Element {
         </div>
         <div className="flex flex-col m-m shadow-s p-s flex-grow">
           <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
-          <Button style={{ alignSelf: 'start' }} theme="error" className="mt-m" disabled={noDone() || !hasAccess({rolesAllowed: ['ROLE_ADMIN']})} onClick={remove}>
+          <Button
+            style={{ alignSelf: 'start' }}
+            theme="error"
+            className="mt-m"
+            disabled={noDone() || !hasAccess({ rolesAllowed: ['ROLE_ADMIN'] })}
+            onClick={remove}
+          >
             <Icon icon="vaadin:trash"></Icon>
             <Tooltip position="end-bottom" slot="tooltip" text="Remove todos that are done"></Tooltip>
           </Button>
