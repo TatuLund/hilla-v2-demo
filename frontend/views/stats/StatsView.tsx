@@ -56,7 +56,12 @@ function getChartOptions(): Options {
   const options: Options = {
     tooltip: {
       formatter: function () {
-        return ( this.point.name ? this.point.name : this.point.category ) + ': <b>' + this.point.y + '</b>';
+        return (
+          (this.point.name ? this.point.name : this.point.category) +
+          ": <b style='color: var(--lumo-primary-text-color)'>" +
+          this.point.y +
+          "</b>"
+        ); 
       },
     },
     yAxis: {

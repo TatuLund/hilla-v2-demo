@@ -4,9 +4,7 @@ import { UserInfoService } from 'Frontend/generated/endpoints';
 // Configure auth to use `UserInfoService.getUserInfo`
 
 const auth = configureAuth(UserInfoService.getUserInfo, {
-  getRoles(user) {
-    return (user?.authorities ?? []) as readonly string[];
-  },
+  getRoles: (userInfo) => userInfo.authorities as readonly string[],
 });
 
 // Export auth provider and useAuth hook, which are automatically
