@@ -47,7 +47,7 @@ export default function MainLayout() {
           <h1 className="text-l m-0">My App</h1>
           <nav>
             {menuRoutes
-              // .filter((route) => hasAccess({ rolesAllowed: route.handle.rolesAllowed }))
+              .filter((route) => hasAccess({ rolesAllowed: route.handle.rolesAllowed }))
               .map(({ path, handle: { icon, title } }) => (
                 <NavLink
                   className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`}
