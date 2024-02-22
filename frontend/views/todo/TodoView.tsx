@@ -25,6 +25,11 @@ export default function TodoView(): JSX.Element {
     return todos.filter((todo) => todo.done).length == 0;
   }
 
+  /**
+   * Assigns a contact to a todo.
+   *
+   * @param {Contact | undefined} contact - The contact to assign to the todo. Use `undefined` to remove the assigned contact.
+   */
   function assignTodo(contact: Contact | undefined) {
     if (value) {
       value.assigned = contact;
@@ -35,6 +40,10 @@ export default function TodoView(): JSX.Element {
     }
   }
 
+  /**
+   * Renders the form buttons component.
+   * @returns The rendered form buttons component.
+   */
   function FormButtons() {
     return (
       <>

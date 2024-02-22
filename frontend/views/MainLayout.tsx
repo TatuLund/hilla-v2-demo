@@ -40,6 +40,7 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const { state, logout, hasAccess } = useAuth();
 
+  // This is a simple example of how to use the `hasAccess` function to filter the menu items
   function Menu() {
     return (
       <nav>
@@ -65,6 +66,7 @@ export default function MainLayout() {
     );
   }
 
+  // This is a simple example of how to use the `state` object to display the user's avatar and name
   function Footer() {
     return (
       <footer className="flex flex-col gap-s">
@@ -102,6 +104,11 @@ export default function MainLayout() {
   );
 }
 
+/**
+ * Renders a menu link with the specified path, icon, and title.
+ * @param {MenuRoute} param0 - The menu route object containing the path, icon, and title.
+ * @returns {JSX.Element} The rendered menu link.
+ */
 function MenuLink({ path, handle: { icon, title } }: MenuRoute) {
   return (
     <NavLink className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`} key={path} to={path}>
@@ -115,6 +122,11 @@ function MenuLink({ path, handle: { icon, title } }: MenuRoute) {
   );
 }
 
+/**
+ * Renders an avatar with a tooltip.
+ * @param userInfo - The user information.
+ * @returns The AvatarWithTooltip component.
+ */
 function AvatarWithTooltip({ userInfo }: { userInfo: UserInfo }) {
   return (
     <Avatar

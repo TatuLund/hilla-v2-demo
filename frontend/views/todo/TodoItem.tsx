@@ -9,7 +9,15 @@ type Props = {
   onClick: (todo: Todo) => void;
 };
 
-// TodoItem is used in TodoGrid, this produces one row for TodoGrid
+/**
+ * Renders a single todo item.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Todo} props.todo - The todo object.
+ * @param {Function} props.onChangeStatus - The function to handle status change.
+ * @param {Function} props.onClick - The function to handle click event.
+ * @returns {JSX.Element} The rendered todo item.
+ */
 export function TodoItem({ todo, onChangeStatus, onClick }: Props): JSX.Element {
   // onCheckedChanged is called also when Checkbox value is changed programmatically
   // thus using onClick. This is a workaround for the issue. Note that the value of

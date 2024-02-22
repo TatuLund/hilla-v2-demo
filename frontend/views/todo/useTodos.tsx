@@ -12,6 +12,24 @@ import UserInfo from 'Frontend/generated/com/example/application/services/UserIn
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
 // This hook is used in TodoView and wraps the model data and functions in an array.
+
+
+/**
+ * Custom hook for managing todos.
+ * 
+ * @returns An array containing the following values in order:
+ * - todos: An array of Todo objects.
+ * - adding: A boolean indicating whether a new todo is being added.
+ * - model: The form model for creating/editing todos.
+ * - value: The current form values as a Todo object.
+ * - remove: A function to remove completed todos from the database.
+ * - addNew: A function to start adding a new todo.
+ * - changeStatus: A function to update the status of a todo.
+ * - edit: A function to start editing a todo.
+ * - submit: A function to submit the form and save a todo.
+ * - field: The form field object.
+ * - invalid: A boolean indicating whether the form is invalid.
+ */
 export function useTodos() {
   const [subscription, setSubscription] = useState<Subscription<Message>>();
   const [todos, setTodos] = useState(Array<Todo>());

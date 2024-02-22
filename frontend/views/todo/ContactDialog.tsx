@@ -53,8 +53,14 @@ function addTooltipToColumn(grid: GridComponent<Contact> | null, column: number)
   sorter?.parentElement?.appendChild(tooltip);
 }
 
-// Show Grid in the dialog to choose a contact.
-// DataProvider is used for paging the Grid with virtual scrolling from ContactEndpoint
+/**
+ * Renders a dialog for assigning a contact to a todo.
+ *
+ * @param {object} props - The component props.
+ * @param {boolean} props.opened - Indicates whether the dialog is opened or not.
+ * @param {Function} props.onAssignContact - The function to be called when a contact is assigned.
+ * @returns {JSX.Element} The rendered ContactDialog component.
+ */
 export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
   const [assigned, setAssigned] = useState<Contact[]>([]);
   const [dataProvider, filter, setFilter, direction, setDirection] = useDataProvider();
@@ -63,10 +69,14 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
     onAssignContact(value);
   }
 
+  /**
+   * Renders the footer content for the ContactDialog component.
+   * 
+   * @returns The JSX element representing the footer content.
+   */
   function FooterCotent() {
     return (
       <div className="flex gap-m w-full">
-
         <Button className="ml-auto" theme="secondary" onClick={() => assignTodo(undefined)}>
           Cancel
         </Button>
@@ -77,6 +87,8 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
     );
   }
 
+  // Show Grid in the dialog to choose a contact.
+  // DataProvider is used for paging the Grid with virtual scrolling from ContactEndpoint
   return (
     <>
       <Dialog
@@ -92,7 +104,9 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
           autoFocus={true}
           autoselect={true}
           onChange={(e) => setFilter(e.target.value)}
-        ><Icon slot="suffix" icon="vaadin:search"></Icon></TextField>
+        >
+          <Icon slot="suffix" icon="vaadin:search"></Icon>
+        </TextField>
         <Grid<Contact>
           ref={(element) => {
             setTimeout(() => {

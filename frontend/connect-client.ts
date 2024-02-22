@@ -9,9 +9,16 @@ const client = new ConnectClient({
       document.body.style.cursor = 'wait';
       const response = await next(context);
       document.body.style.cursor = 'default';
+      // const resp = response.clone();
+      // resp.headers.forEach((value, key) => {
+      //   console.log(key + ': ' + value);
+      // });
+      // resp.json().then((data) => {
+      //   console.log(data);
+      // });
       return response;
     },
-  ],
+  ]
 });
 
 export default client;
