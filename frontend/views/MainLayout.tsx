@@ -40,7 +40,11 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const { state, logout, hasAccess } = useAuth();
 
-  // This is a simple example of how to use the `hasAccess` function to filter the menu items
+  /**
+   * Renders the menu component.
+   * This is a simple example of how to use the `hasAccess` function to filter the menu items.
+   * @returns The rendered menu component.
+   */
   function Menu() {
     return (
       <nav>
@@ -53,6 +57,10 @@ export default function MainLayout() {
     );
   }
 
+  /**
+   * Renders a logout button.
+   * When clicked, it logs the user out and navigates to the login page.
+   */
   function LogoutButton() {
     return (
       <Button
@@ -66,8 +74,15 @@ export default function MainLayout() {
     );
   }
 
-  // This is a simple example of how to use the `state` object to display the user's avatar and name
+  /**
+   * Renders the footer component.
+   * This component displays the user's avatar and name if the user is logged in,
+   * otherwise it displays a sign-in link.
+   *
+   * @returns The rendered footer component.
+   */
   function Footer() {
+    // This is a simple example of how to use the `state` object to display the user's avatar and name
     return (
       <footer className="flex flex-col gap-s">
         {state.user ? (
