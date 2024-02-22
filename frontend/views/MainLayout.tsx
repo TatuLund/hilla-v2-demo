@@ -14,6 +14,9 @@ import UserInfo from 'Frontend/generated/com/example/application/services/UserIn
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import { RouteObjectWithAuth } from '@hilla/react-auth';
 
+/**
+ * Represents a menu route in the MainLayout component.
+ */
 type MenuRoute = RouteObjectWithAuth &
   Readonly<{
     path: string;
@@ -24,6 +27,11 @@ const navLinkClasses = ({ isActive }: any) => {
   return `block rounded-m p-s ${isActive ? 'bg-primary-10 text-primary' : 'text-body'}`;
 };
 
+/**
+ * Generates the profile picture URL for a given user.
+ * @param userInfo - The user information object.
+ * @returns The profile picture URL.
+ */
 function profilePictureUrl(userInfo: UserInfo): string {
   const profilePictureUrl = `data:image;base64,${btoa(
     userInfo.picture ? userInfo.picture.reduce((str, n) => str + String.fromCharCode((n + 256) % 256), '') : ''
