@@ -15,6 +15,10 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.BrowserCallable;
 import dev.hilla.Nonnull;
 
+/**
+ * This class represents the endpoint for managing contacts.
+ * It provides methods for retrieving, saving, and deleting contacts.
+ */
 @BrowserCallable
 @PermitAll
 public class ContactEndpoint {

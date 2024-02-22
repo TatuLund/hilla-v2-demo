@@ -120,9 +120,34 @@ languages.forEach((lang) => {
 
 type InheritedDatePickerProps = Omit<DatePickerProps, 'dangerouslySetInnerHTML' | 'i18n'>;
 
+/**
+ * Props for the LocalizedDatePicker component.
+ * @template InheritedDatePickerProps - The inherited props from the DatePicker component.
+ * @template Language - The type representing the language.
+ */
 export type LocalizedDatePickerProps = InheritedDatePickerProps & { language: Language };
 
-// DatePicker with i18n support
+/**
+ * A localized date picker component.
+ *
+ * @component
+ * @example
+ * // Usage:
+ * <LocalizedDatePicker language="en" />
+ *
+ * @param {LocalizedDatePickerProps} props - The props for the LocalizedDatePicker component.
+ * @param {React.Ref<DatePickerWebComponent>} ref - The ref for the DatePickerWebComponent.
+ * @returns {JSX.Element} The rendered LocalizedDatePicker component.
+ *
+ * @typedef {object} LocalizedDatePickerProps - The props for the LocalizedDatePicker component.
+ * @property {string} language - The language for the date picker.
+ * @property {DatePickerProps} [datePickerProps] - The props for the underlying DatePicker component.
+ *
+ * @typedef {object} DatePickerProps - The props for the DatePicker component.
+ * @property {string} [format] - The format of the date.
+ * @property {Date} [value] - The selected date.
+ * @property {Function} [onChange] - The callback function triggered when the date changes.
+ */
 export const LocalizedDatePicker = forwardRef<DatePickerWebComponent, LocalizedDatePickerProps>(
   (props: LocalizedDatePickerProps, ref) => <DatePicker ref={ref} i18n={i18ns[props.language]} {...props} />
 );
