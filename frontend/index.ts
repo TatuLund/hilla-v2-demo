@@ -2,6 +2,9 @@ import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.js';
 
-const root = createRoot(document.getElementById('outlet')!); //.render(createElement(App));
+const root = createRoot(document.getElementById('outlet')!);
 
-root.render(createElement(App));
+const element = createElement(App);
+root.render(element);
+
+// document.documentElement.setAttribute('theme', 'dark');

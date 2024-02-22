@@ -19,7 +19,20 @@ export function TodoItem({ todo, onChangeStatus, onClick }: Props): JSX.Element 
       <Checkbox checked={todo.done} onClick={({ currentTarget }) => onChangeStatus(todo, !currentTarget.checked)}>
         <Tooltip position="start" slot="tooltip" text="Done"></Tooltip>
       </Checkbox>
-      <span id={'task-' + todo.id} onClick={(e) => onClick(todo)} className="text-primary text-l font-bold">
+      <span
+        tabIndex={0}
+        id={'task-' + todo.id}
+        onKeyDown={(e) => {
+          if (e.key == ' ') {
+            e.preventDefault();
+            onClick(todo);
+          }
+        }}
+        role='button'
+        aria-label='Edit item'
+        onClick={(e) => onClick(todo)}
+        className="text-primary text-l font-bold"
+      >
         {todo.task}
       </span>
       <Tooltip position="start-bottom" for={'task-' + todo.id} text="Edit me"></Tooltip>

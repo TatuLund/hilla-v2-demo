@@ -2,13 +2,14 @@ import { Grid, GridSorterDirection } from '@hilla/react-components/Grid.js';
 import { GridDataProviderCallback, GridDataProviderParams } from '@vaadin/grid';
 import { GridColumn } from '@hilla/react-components/GridColumn.js';
 import { GridSortColumn } from '@hilla/react-components/GridSortColumn.js';
-import Contact from 'Frontend/generated/com/example/application/data/Contact';
+import Contact from 'Frontend/generated/com/example/application/data/Contact.js';
 import { Dialog } from '@hilla/react-components/Dialog.js';
 import { ContactEndpoint } from 'Frontend/generated/endpoints';
 import { TextField } from '@hilla/react-components/TextField.js';
 import { Button } from '@hilla/react-components/Button.js';
 import { useCallback, useState } from 'react';
 import { Grid as GridComponent } from '@vaadin/grid';
+import { Icon } from '@hilla/react-components/Icon.js';
 
 type Props = {
   opened: boolean;
@@ -65,13 +66,8 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
   function FooterCotent() {
     return (
       <div className="flex gap-m w-full">
-        <TextField
-          className="mr-auto"
-          placeholder="Filter by e-mail"
-          value={filter}
-          onValueChanged={({ detail: { value } }) => setFilter(value)}
-        ></TextField>
-        <Button theme="secondary" onClick={() => assignTodo(undefined)}>
+
+        <Button className="ml-auto" theme="secondary" onClick={() => assignTodo(undefined)}>
           Cancel
         </Button>
         <Button theme="primary" disabled={assigned.length == 0} onClick={() => assignTodo(assigned[0])}>
@@ -89,6 +85,14 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
         onOpenedChanged={({ detail: { value } }) => setFilter('')}
         footer={<FooterCotent />}
       >
+        <TextField
+          className="mr-auto uppercase"
+          placeholder="Filter by e-mail"
+          value={filter}
+          autoFocus={true}
+          autoselect={true}
+          onChange={(e) => setFilter(e.target.value)}
+        ><Icon slot="suffix" icon="vaadin:search"></Icon></TextField>
         <Grid<Contact>
           ref={(element) => {
             setTimeout(() => {

@@ -45,11 +45,11 @@ public class SecurityConfig extends VaadinWebSecurity {
 
         // http.rememberMe().alwaysRemember(false);
 
-        http.authorizeHttpRequests(
-                authorize -> authorize.requestMatchers(new AntPathRequestMatcher("/images/*.png")).permitAll());
         // Icons from the line-awesome addon
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(new AntPathRequestMatcher("/line-awesome/**/*.svg")).permitAll());
+                .requestMatchers(new AntPathRequestMatcher("/images/*.png"),
+                        new AntPathRequestMatcher("/line-awesome/**/*.svg"))
+                .permitAll());
 
         // Configure your static resources with public access before calling
         // super.configure(HttpSecurity) as it adds final anyRequest matcher

@@ -45,7 +45,7 @@ export default function TodoView(): JSX.Element {
           >
             {assigned ? assigned.firstName + ' ' + assigned.lastName : 'Assign'}
           </Button>
-          <Button id="add" className="ml-auto" theme="primary" disabled={invalid} onClick={submit}>
+          <Button tabIndex={1} id="add" className="ml-auto" theme="primary" disabled={invalid} onClick={submit}>
             {adding ? 'Add' : 'Update'}
           </Button>
         </div>
@@ -63,7 +63,7 @@ export default function TodoView(): JSX.Element {
             <Tooltip position="end-bottom" slot="tooltip" text="Add new todo"></Tooltip>
           </Button>
           <FormLayout>
-            <ComboBox label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
+            <ComboBox<string> label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
             <TextField label="Description" {...field(model.description)} />
             <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
             <LocalizedDatePicker

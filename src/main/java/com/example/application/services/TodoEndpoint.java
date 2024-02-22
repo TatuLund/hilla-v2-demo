@@ -36,15 +36,24 @@ public class TodoEndpoint {
         this.eventService = eventService;
     }
 
+    /**
+     * Find all todos
+     * 
+     * @return the list of todos
+     */
     @Transactional
     public @Nonnull List<@Nonnull Todo> findAll() {
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-        }
+        doWait();
+        logger.info("Fetching all todos");
         return repository.findAll();
     }
 
+    /**
+     * Save a todo
+     * 
+     * @param todo the todo to save
+     * @return the saved todo
+     */
     @Transactional
     public Todo save(Todo todo) {
         Todo result;
@@ -82,12 +91,7 @@ public class TodoEndpoint {
 
         if (old.isPresent()) {
             Todo updated = old.get();
-            updated.setAssigned(todo.getAssigned());
-            updated.setDeadline(todo.getDeadline());
-            updated.setDone(todo.isDone());
-            updated.setPriority(todo.getPriority());
-            updated.setTask(todo.getTask());
-            updated.setDescription(todo.getDescription());
+            updated.from(todo);
             result = repository.save(updated);
         } else {
             result = repository.save(todo);
@@ -107,6 +111,7 @@ public class TodoEndpoint {
         return authorities;
     }
 
+    // check if the assignee has changed
     private boolean isAssignedChanged(Todo todo, Optional<Todo> old) {
         if (old.isPresent()) {
             if (old.get().getAssigned() == null && todo.getAssigned() != null) {
@@ -119,11 +124,9 @@ public class TodoEndpoint {
         return true;
     }
 
+    // check if the assignee already has a todo
     private boolean isAssigneeOccupied(Todo todo) {
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-        }
+        doWait();
         List<Todo> todos = repository.findAll();
         todos.removeIf(t -> t.getId() == todo.getId());
         IntStream ids = todos.stream().filter(t -> (t.getAssigned() != null)).mapToInt(t -> t.getAssigned().getId());
@@ -131,6 +134,19 @@ public class TodoEndpoint {
         return match;
     }
 
+    // simulate a long running operation
+    private void doWait() {
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+        }
+    }
+
+    /**
+     * Remove a todo
+     * 
+     * @param todos the todos to remove
+     */
     @Transactional
     @RolesAllowed("ADMIN")
     public void remove(List<Todo> todos) {
@@ -142,4 +158,6 @@ public class TodoEndpoint {
                 .forEach(t -> repository.delete(t));
         eventService.send(message);
     }
+
+    
 }

@@ -40,52 +40,54 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const { state, logout, hasAccess } = useAuth();
 
+  function Menu() {
+    return (
+      <nav>
+        {menuRoutes
+          .filter((route) => hasAccess({ rolesAllowed: route.handle.rolesAllowed }))
+          .map(({ path, handle: { icon, title } }) => (
+            <MenuLink key={path} path={path} handle={{ icon, title }} />
+          ))}
+      </nav>
+    );
+  }
+
+  function LogoutButton() {
+    return (
+      <Button
+        onClick={async () => {
+          logout();
+          navigate('/login');
+        }}
+      >
+        Sign out
+      </Button>
+    );
+  }
+
+  function Footer() {
+    return (
+      <footer className="flex flex-col gap-s">
+        {state.user ? (
+          <>
+            <AvatarWithTooltip userInfo={state.user} />
+            <LogoutButton />
+          </>
+        ) : (
+          <a href="/login">Sign in</a>
+        )}
+      </footer>
+    );
+  }
+
   return (
     <AppLayout primarySection="drawer">
       <div slot="drawer" className="flex flex-col justify-between h-full p-m">
         <header className="flex flex-col gap-m">
           <h1 className="text-l m-0">My App</h1>
-          <nav>
-            {menuRoutes
-              .filter((route) => hasAccess({ rolesAllowed: route.handle.rolesAllowed }))
-              .map(({ path, handle: { icon, title } }) => (
-                <NavLink
-                  className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`}
-                  key={path}
-                  to={path}
-                >
-                  {({ isActive }) => (
-                    <Item key={path} selected={isActive}>
-                      <span className={`${icon} ${css.navicon}`} aria-hidden="true"></span>
-                      {title}
-                    </Item>
-                  )}
-                </NavLink>
-              ))}
-          </nav>
+          <Menu />
         </header>
-        <footer className="flex flex-col gap-s">
-          {state.user ? (
-            <>
-              <div className="flex items-center gap-s">
-                <Avatar id="avatar" theme="xsmall" img={profilePictureUrl(state.user)} name={state.user.fullName}>
-                  <Tooltip for="avatar" text={state.user.name} />
-                </Avatar>
-                {state.user.fullName}
-              </div>
-              <Button
-                onClick={async () => {
-                  logout();
-                  navigate('/login');
-                }}
-              >
-                Sign out
-              </Button>
-            </>
-          ) : (
-            <a href="/login">Sign in</a>
-          )}
-        </footer>
+        <Footer />
       </div>
 
       <DrawerToggle slot="navbar" aria-label="Menu toggle"></DrawerToggle>
@@ -97,5 +99,32 @@ export default function MainLayout() {
         <Outlet />
       </Suspense>
     </AppLayout>
+  );
+}
+
+function MenuLink({ path, handle: { icon, title } }: MenuRoute) {
+  return (
+    <NavLink className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`} key={path} to={path}>
+      {({ isActive }) => (
+        <Item key={path} selected={isActive}>
+          <span className={`${icon} ${css.navicon}`} aria-hidden="true"></span>
+          {title}
+        </Item>
+      )}
+    </NavLink>
+  );
+}
+
+function AvatarWithTooltip({ userInfo }: { userInfo: UserInfo }) {
+  return (
+    <Avatar
+      id="avatar"
+      theme="xsmall"
+      img={profilePictureUrl(userInfo)}
+      name={userInfo.fullName}
+      style={{ cursor: 'pointer' }}
+    >
+      <Tooltip for="avatar" text={userInfo.name} />
+    </Avatar>
   );
 }

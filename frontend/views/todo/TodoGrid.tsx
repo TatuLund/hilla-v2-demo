@@ -11,7 +11,7 @@ type Props = {
 export function TodoGrid({ todos, onChangeStatus, onClick }: Props): JSX.Element {
   return (
     <>
-      <div style={{height : "300px"}} className="p-m grid grid-cols-3 lg:grid-cols-6 gap-s overflow-auto flex-grow">
+      <div style={{ height: '300px' }} className="p-m grid grid-cols-3 lg:grid-cols-6 gap-s overflow-auto flex-grow">
         <GridHeader />
         {todos.map((todo) => (
           <TodoItem
@@ -26,6 +26,7 @@ export function TodoGrid({ todos, onChangeStatus, onClick }: Props): JSX.Element
   );
 }
 
+// GridHeader is used in TodoGrid, this produces one row for TodoGrid
 function GridHeader() {
   return (
     <>

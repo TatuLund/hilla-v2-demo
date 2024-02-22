@@ -12,8 +12,10 @@ export default function EditorView(): JSX.Element {
 
   return (
     <>
-      <Button onClick={() => setGridVisible(!gridVisible)}>{gridVisible ? 'Hide' : 'Show'}</Button>
-      <EditorGrid visible={gridVisible}></EditorGrid>
+      <div>
+        <Button onClick={() => setGridVisible(!gridVisible)}>{gridVisible ? 'Hide' : 'Show'}</Button>
+        <EditorGrid visible={gridVisible}></EditorGrid>
+      </div>
     </>
   );
 }

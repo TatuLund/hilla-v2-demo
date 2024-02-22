@@ -7,6 +7,7 @@ import { protectRoutes, RouteObjectWithAuth } from '@hilla/react-auth';
 const TodoView = lazy(async () => import('Frontend/views/todo/TodoView.js'));
 const StatsView = lazy(async () => import('Frontend/views/stats/StatsView.js'));
 const EditorView = lazy(async () => import('Frontend/views/stats/EditorView.js'));
+const GoogleChartView = lazy(async () => import('Frontend/views/stats/GoogleChartView.js'));
 
 export type MenuProps = Readonly<{
   icon?: string;
@@ -40,6 +41,11 @@ export const routes: readonly RouteObject[] = protectRoutes([
         path: '/editor',
         element: <EditorView />,
         handle: { icon: 'la la-table', title: 'Editor', requiresLogin: true, rolesAllowed: ['ROLE_ADMIN'] },
+      },
+      {
+        path: '/chart',
+        element: <GoogleChartView />,
+        handle: { icon: 'la la-table', title: 'GChart', requiresLogin: true },
       },
     ],
   },

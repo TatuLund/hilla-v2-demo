@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useForm } from '@hilla/react-form';
-import { EventEndpoint, TodoEndpoint } from 'Frontend/generated/endpoints';
+import { EventEndpoint, TodoEndpoint, UserInfoService } from 'Frontend/generated/endpoints';
 import { EndpointError, Subscription } from '@hilla/frontend';
 import type Todo from 'Frontend/generated/com/example/application/data/Todo';
 import { Notification } from '@hilla/react-components/Notification.js';
 import Message from 'Frontend/generated/com/example/application/services/EventService/Message';
 import TodoModel from 'Frontend/generated/com/example/application/data/TodoModel';
 import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
+import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
@@ -15,23 +16,25 @@ export function useTodos() {
   const [subscription, setSubscription] = useState<Subscription<Message>>();
   const [todos, setTodos] = useState(Array<Todo>());
   const [adding, setAdding] = useState(true);
+  const [userInfo, setUserInfo] = useState<UserInfo>();
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
 
   useEffect(() => {
     (async () => {
       setTodos(await TodoEndpoint.findAll());
+      setUserInfo(await UserInfoService.getUserInfo());
       if (!subscription) {
         setSubscription(
-          EventEndpoint.getEventsCancellable().onNext((event) => {
+          EventEndpoint.getEventsCancellable().onNext((event: Message) => {
             if (event.messageType == MessageType.EDITING) {
               Notification.show(event.data, { theme: 'warning' });
             } else {
               Notification.show(event.data, { theme: 'success' });
+              setTimeout(async () => {
+                // Wait 3 seconds before updating the list of todos
+                setTodos(await TodoEndpoint.findAll());
+              }, 3000);
             }
-            setTimeout(async () => {
-              // Wait 3 seconds before updating the list of todos
-              setTodos(await TodoEndpoint.findAll());
-            }, 3000);
           })
         );
       }
@@ -73,7 +76,7 @@ export function useTodos() {
     const id = todo.id ? todo.id : 0;
     const message: Message = {
       id: id,
-      data: 'Some one is editing ' + todo.task,
+      data: userInfo?.fullName + ' (' + userInfo?.name + ') is editing "' + todo.task + '"',
       messageType: MessageType.EDITING,
     };
     EventEndpoint.send(message);
@@ -92,7 +95,7 @@ export function useTodos() {
     setTodos(todos.map((item) => (item.id === todo.id ? saved : item)));
   }
 
-  return [todos, adding, model, value, remove, addNew, changeStatus, edit, submit, field, invalid] as const;
+  return [todos, adding, model, value as Todo, remove, addNew, changeStatus, edit, submit, field, invalid] as const;
 }
 
 // Handle errors from the backend, which are thrown as EndpointError with JSON message.

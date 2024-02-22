@@ -34,6 +34,11 @@ public class EventService {
         return bus;
     }
 
+    /**
+     * Submit a message.
+     * 
+     * @param message the message to send
+     */
     public void send(Message message) {
         event.emitNext(message, emitFailureHandler());
     }
