@@ -2,7 +2,7 @@ import { Grid, GridSorterDirection } from '@hilla/react-components/Grid.js';
 import { GridDataProviderCallback, GridDataProviderParams } from '@vaadin/grid';
 import { GridColumn } from '@hilla/react-components/GridColumn.js';
 import { GridSortColumn } from '@hilla/react-components/GridSortColumn.js';
-import Contact from 'Frontend/generated/com/example/application/data/Contact.js';
+import Contact from 'Frontend/generated/com/example/application/data/Contact';
 import { Dialog } from '@hilla/react-components/Dialog.js';
 import { ContactEndpoint } from 'Frontend/generated/endpoints';
 import { TextField } from '@hilla/react-components/TextField.js';
@@ -11,14 +11,24 @@ import { useCallback, useState } from 'react';
 import { Grid as GridComponent } from '@vaadin/grid';
 import { Icon } from '@hilla/react-components/Icon.js';
 
+/**
+ * Props for the ContactDialog component.
+ */
 type Props = {
   opened: boolean;
   onAssignContact: (contact: Contact | undefined) => void;
 };
 
-// Wrap callback in useCallback to avoid re-creating the callback on every render of
-// the component. And use custom hook to wrap the dataProvider with filter and direction.
+/**
+ * Custom hook that provides a data provider function for fetching contact data.
+ * The data provider is wrapped with filter and direction functionality.
+ *
+ * @returns An array containing the data provider function, filter value, filter setter,
+ * direction value, and direction setter.
+ */
 function useDataProvider() {
+  // Wrap callback in useCallback to avoid re-creating the callback on every render of
+  // the component. And use custom hook to wrap the dataProvider with filter and direction.
   const [filter, setFilter] = useState('');
   const [direction, setDirection] = useState<GridSorterDirection>('desc');
 
@@ -43,6 +53,12 @@ function useDataProvider() {
   return [dataProvider, filter, setFilter, direction, setDirection] as const;
 }
 
+/**
+ * Adds a tooltip to a specific column in a grid.
+ * 
+ * @param grid - The grid component.
+ * @param column - The index of the column to add the tooltip to.
+ */
 function addTooltipToColumn(grid: GridComponent<Contact> | null, column: number) {
   // Add tooltip to the sorter column using plain JS
   const sorter = grid?.getElementsByTagName('vaadin-grid-sorter')[column];
@@ -71,7 +87,7 @@ export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
 
   /**
    * Renders the footer content for the ContactDialog component.
-   * 
+   *
    * @returns The JSX element representing the footer content.
    */
   function FooterCotent() {
