@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm } from '@hilla/react-form';
+import { useForm, useFormPart } from '@hilla/react-form';
 import { EventEndpoint, TodoEndpoint, UserInfoService } from 'Frontend/generated/endpoints';
 import { EndpointError, Subscription } from '@hilla/frontend';
 import type Todo from 'Frontend/generated/com/example/application/data/Todo';
@@ -8,16 +8,16 @@ import Message from 'Frontend/generated/com/example/application/services/EventSe
 import TodoModel from 'Frontend/generated/com/example/application/data/TodoModel';
 import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
+import { FutureWeekdayAndRequired } from '../data/validators';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
 // This hook is used in TodoView and wraps the model data and functions in an array.
 
-
 /**
  * Custom hook for managing todos.
- * 
- * @returns An array containing the following values in order:
+ *
+ * @returns An arry containing the following values in order:
  * - todos: An array of Todo objects.
  * - adding: A boolean indicating whether a new todo is being added.
  * - model: The form model for creating/editing todos.
@@ -36,9 +36,11 @@ export function useTodos() {
   const [adding, setAdding] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
+  const dateField = useFormPart(model.deadline);
 
   useEffect(() => {
     (async () => {
+      dateField.addValidator(new FutureWeekdayAndRequired());
       setTodos(await TodoEndpoint.findAll());
       setUserInfo(await UserInfoService.getUserInfo());
       if (!subscription) {
@@ -62,14 +64,22 @@ export function useTodos() {
     };
   }, []);
 
-  // Collect done Todos and request to remove from the database using TodoEndpoint.remove
+  /**
+   * Removes the done todos from the database and updates the todos state.
+   * @returns A promise that resolves when the removal is complete.
+   */
   async function remove(): Promise<void> {
+    // Collect done Todos and request to remove from the database using TodoEndpoint.remove
     const dones = todos.filter((todo) => todo.done);
     await TodoEndpoint.remove(dones);
     const notDone = todos.filter((todo) => !todo.done);
     setTodos(notDone);
   }
 
+  /**
+   * Submits a todo for saving.
+   * @param todo The todo to be saved.
+   */
   async function submitTodo(todo: Todo) {
     var saved: Todo | undefined;
     try {
@@ -88,6 +98,10 @@ export function useTodos() {
     }
   }
 
+  /**
+   * Edits a todo.
+   * @param todo - The todo to be edited.
+   */
   function edit(todo: Todo) {
     setAdding(false);
     read(todo);
@@ -100,13 +114,23 @@ export function useTodos() {
     EventEndpoint.send(message);
   }
 
+  /**
+   * Sets the state of adding to true and clears the input fields.
+   */
   function addNew() {
     setAdding(true);
     clear();
   }
 
-  // Update status of the Todo, this function is passed down to TodoItem via TodoGrid
+  /**
+   * Updates the status of a todo.
+   *
+   * @param todo - The todo to update.
+   * @param done - The new status of the todo.
+   * @returns A promise that resolves when the update is complete.
+   */
   async function changeStatus(todo: Todo, done: boolean | undefined): Promise<void> {
+    // Update status of the Todo, this function is passed down to TodoItem via TodoGrid
     const isDone = done ? done : false;
     const newTodo = { ...todo, done: isDone };
     const saved = (await TodoEndpoint.save(newTodo)) ?? newTodo;
@@ -116,9 +140,14 @@ export function useTodos() {
   return [todos, adding, model, value as Todo, remove, addNew, changeStatus, edit, submit, field, invalid] as const;
 }
 
-// Handle errors from the backend, which are thrown as EndpointError with JSON message.
-// Backend performs validation.
+/**
+ * Handles errors from the backend, which are thrown as EndpointError with JSON message.
+ * Backend performs validation.
+ * @param error - The error object to handle.
+ */
 function handleError(error: unknown) {
+  // Handle errors from the backend, which are thrown as EndpointError with JSON message.
+  // Backend performs validation.
   if (error instanceof EndpointError) {
     const json = JSON.parse(error.message);
     if (json.type == 'dev.hilla.exception.EndpointException') {

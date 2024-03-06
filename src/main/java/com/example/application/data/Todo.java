@@ -2,6 +2,8 @@ package com.example.application.data;
 
 import java.time.LocalDate;
 
+import com.example.application.validators.CustomDateConstraint;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Future;
@@ -26,7 +28,7 @@ public class Todo extends AbstractEntity {
     @Min(1)
     private Integer priority;
 
-    @Future
+    @CustomDateConstraint
     private LocalDate deadline;
 
     @ManyToOne

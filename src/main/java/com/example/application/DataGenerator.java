@@ -78,6 +78,12 @@ public class DataGenerator {
                 return todo;
             }).collect(Collectors.toList());
 
+            todos.forEach(todo -> {
+                var date = todo.getDeadline();
+                var newDate = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
+                todo.setDeadline(newDate);
+            });
+
             todoRepository.saveAll(todos);
 
             logger.info("Generated demo data");

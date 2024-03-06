@@ -21,6 +21,10 @@ export default function TodoView(): JSX.Element {
   const { hasAccess } = useAuth();
   const presets = ['Make food', 'Clean the house', 'Do the groceries', 'Mow the lawn', 'Walk the dog'];
 
+  /**
+   * Checks if there are no todos marked as done.
+   * @returns {boolean} True if there are no todos marked as done, false otherwise.
+   */
   function noDone(): boolean {
     return todos.filter((todo) => todo.done).length == 0;
   }
@@ -69,11 +73,11 @@ export default function TodoView(): JSX.Element {
         <div className="grid gap-m shadow-s m-m p-s">
           <Button style={{ width: '60px' }} id="new" onClick={() => addNew()}>
             <Icon icon="vaadin:plus"></Icon>
-            <Tooltip position="end-bottom" slot="tooltip" text="Add new todo"></Tooltip>
+            <Tooltip position="end-bottom" slot="tooltip" text="Add a new todo"></Tooltip>
           </Button>
           <FormLayout>
             <ComboBox<string> label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
-            <TextField label="Description" {...field(model.description)} />
+            <TextField autocomplete="off" label="Description" {...field(model.description)} />
             <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
             <LocalizedDatePicker
               autoselect
