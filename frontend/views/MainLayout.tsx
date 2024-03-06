@@ -72,6 +72,7 @@ export default function MainLayout() {
   function LogoutButton() {
     return (
       <Button
+        className="flex-grow"
         onClick={async () => {
           logout();
           navigate('/login');
@@ -89,10 +90,10 @@ export default function MainLayout() {
    *
    * @returns The rendered footer component.
    */
-  function Footer() {
+  function DrawerFooter() {
     // This is a simple example of how to use the `state` object to display the user's avatar and name
     return (
-      <footer className="flex flex-col gap-s">
+      <footer className="flex flex-row items-center gap-s">
         {state.user ? (
           <>
             <AvatarWithTooltip userInfo={state.user} />
@@ -112,7 +113,7 @@ export default function MainLayout() {
           <h1 className="text-l m-0">My App</h1>
           <Menu />
         </header>
-        <Footer />
+        <DrawerFooter />
       </div>
 
       <DrawerToggle slot="navbar" aria-label="Menu toggle"></DrawerToggle>
