@@ -119,7 +119,7 @@ export function useTodos() {
    */
   function addNew() {
     setAdding(true);
-    clear();
+    clear(); // read(TodoModel.createEmptyValue());
   }
 
   /**
@@ -149,11 +149,8 @@ function handleError(error: unknown) {
   // Handle errors from the backend, which are thrown as EndpointError with JSON message.
   // Backend performs validation.
   if (error instanceof EndpointError) {
-    const json = JSON.parse(error.message);
-    if (json.type == 'dev.hilla.exception.EndpointException') {
-      Notification.show(json.message, { theme: 'error' });
-      return;
-    }
+    Notification.show(error.message, { theme: 'error' });
+  } else {
+    Notification.show('Error in saving', { theme: 'error' });
   }
-  Notification.show('Error in saving', { theme: 'error' });
 }
