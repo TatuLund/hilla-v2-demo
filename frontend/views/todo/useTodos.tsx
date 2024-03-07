@@ -41,6 +41,7 @@ export function useTodos() {
   useEffect(() => {
     (async () => {
       dateField.addValidator(new FutureWeekdayAndRequired());
+      clearForm();
       setTodos(await TodoEndpoint.findAll());
       setUserInfo(await UserInfoService.getUserInfo());
       if (!subscription) {
@@ -119,7 +120,20 @@ export function useTodos() {
    */
   function addNew() {
     setAdding(true);
-    clear(); // read(TodoModel.createEmptyValue());
+    clearForm;
+    // clear(); // read(TodoModel.createEmptyValue());
+  }
+
+  /**
+   * Clears the form by setting the task and priority to empty values.
+   * This is a workaround for a bug in the ComboBox and IntegerField components.
+   * @returns void
+   */
+  function clearForm() {
+    const empty = TodoModel.createEmptyValue();
+    empty.task = ''; // ComboBox does not accept undefined
+    empty.priority = 0; // IntegerField does not accept undefined
+    read(empty);
   }
 
   /**

@@ -48,7 +48,7 @@ export default function TodoView(): JSX.Element {
    * Renders the form buttons component.
    * @returns The rendered form buttons component.
    */
-  function FormButtons() {
+  function FormButtons(): JSX.Element {
     return (
       <>
         <div className="flex">
