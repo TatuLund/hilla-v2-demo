@@ -39,10 +39,10 @@ export default function LoginView() {
       i18n={loginI18nDefault}
       onLogin={async ({ detail: { username, password } }) => {
         const { defaultUrl, error, redirectUrl } = await login(username, password);
-
         if (error) {
           setError(true);
         } else {
+          localStorage.setItem('loggedIn', 'true');
           setUrl(redirectUrl ?? defaultUrl ?? '/');
         }
       }}

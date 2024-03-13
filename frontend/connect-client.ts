@@ -16,6 +16,12 @@ const client = new ConnectClient({
       // resp.json().then((data) => {
       //   console.log(data);
       // });
+      const loggedIn = localStorage.getItem('loggedIn');
+      if (loggedIn && response.status === 401) {
+        localStorage.removeItem('loggedIn');
+        window.location.href = '/login';
+        window.location.reload();
+      }
       return response;
     },
   ]
