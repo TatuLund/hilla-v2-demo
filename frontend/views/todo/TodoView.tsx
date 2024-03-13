@@ -13,6 +13,7 @@ import { LocalizedDatePicker } from '../../components/localizeddatepicker/Locali
 import { useState } from 'react';
 import { useTodos } from './useTodos';
 import { useAuth } from 'Frontend/auth';
+import FormButtons from './FormButtons';
 
 export default function TodoView(): JSX.Element {
   const [todos, adding, model, value, remove, addNew, changeStatus, edit, submit, field, invalid] = useTodos();
@@ -44,28 +45,6 @@ export default function TodoView(): JSX.Element {
     }
   }
 
-  /**
-   * Renders the form buttons component.
-   * @returns The rendered form buttons component.
-   */
-  function FormButtons(): JSX.Element {
-    return (
-      <>
-        <div className="flex">
-          <Button
-            disabled={!hasAccess({ rolesAllowed: ['ROLE_ADMIN'] })}
-            onClick={() => setDialogOpened(!dialogOpened)}
-          >
-            {assigned ? assigned.firstName + ' ' + assigned.lastName : 'Assign'}
-          </Button>
-          <Button tabIndex={1} id="add" className="ml-auto" theme="primary" disabled={invalid} onClick={submit}>
-            {adding ? 'Add' : 'Update'}
-          </Button>
-        </div>
-      </>
-    );
-  }
-
   // Use useForm to bind the fields with ...field directive.
   return (
     <>
@@ -89,7 +68,13 @@ export default function TodoView(): JSX.Element {
             />
           </FormLayout>
           <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
-          <FormButtons />
+          <FormButtons
+            adding={adding}
+            assigned={assigned}
+            invalid={invalid}
+            onAssign={() => setDialogOpened(!dialogOpened)}
+            onSave={submit}
+          />
         </div>
         <div className="flex flex-col m-m shadow-s p-s flex-grow">
           <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
