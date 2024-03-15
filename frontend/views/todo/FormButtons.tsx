@@ -1,7 +1,6 @@
 import { Button } from '@hilla/react-components/Button.js';
 import { useAuth } from 'Frontend/auth';
 import Contact from 'Frontend/generated/com/example/application/data/Contact';
-import Todo from 'Frontend/generated/com/example/application/data/Todo';
 
 type Props = {
   onAssign: () => void;

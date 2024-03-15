@@ -77,7 +77,7 @@ export default function TodoView(): JSX.Element {
           />
         </div>
         <div className="flex flex-col m-m shadow-s p-s flex-grow">
-          <TodoGrid todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
+          <TodoGrid current={value} todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
           <Button
             style={{ alignSelf: 'start' }}
             theme="error"
