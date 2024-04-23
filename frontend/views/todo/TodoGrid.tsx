@@ -4,6 +4,7 @@ import { TodoItem } from './TodoItem';
 type Props = {
   todos: Todo[];
   current: Todo | undefined;
+  readonly: boolean;
   onChangeStatus: (todo: Todo, value: boolean | undefined) => void;
   onClick: (todo: Todo) => void;
 };
@@ -16,7 +17,7 @@ type Props = {
  * @param onClick - The callback function to handle click event on a todo item.
  * @returns The JSX element representing the todo grid.
  */
-export function TodoGrid({ todos, onChangeStatus, onClick, current }: Props): JSX.Element {
+export function TodoGrid({ todos, onChangeStatus, onClick, current, readonly }: Props): JSX.Element {
   // Display list of todos in CSS Grid
   return (
     <>
@@ -24,6 +25,7 @@ export function TodoGrid({ todos, onChangeStatus, onClick, current }: Props): JS
         <GridHeader />
         {todos.map((todo) => (
           <TodoItem
+            readonly={readonly}
             onClick={(todo) => onClick(todo)}
             key={todo.id}
             todo={todo}

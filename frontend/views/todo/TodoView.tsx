@@ -16,7 +16,7 @@ import { useAuth } from 'Frontend/auth';
 import FormButtons from './FormButtons';
 
 export default function TodoView(): JSX.Element {
-  const [todos, adding, model, value, remove, addNew, changeStatus, edit, submit, field, invalid] = useTodos();
+  const [todos, adding, model, value, remove, addNew, changeStatus, edit, submit, field, invalid, offline] = useTodos();
   const [dialogOpened, setDialogOpened] = useState(false);
   const [assigned, setAssigned] = useState<Contact>();
   const { hasAccess } = useAuth();
@@ -50,15 +50,16 @@ export default function TodoView(): JSX.Element {
     <>
       <div className="h-full flex flex-col">
         <div className="grid gap-m shadow-s m-m p-s">
-          <Button style={{ width: '60px' }} id="new" onClick={() => addNew()}>
+          <Button disabled={offline} style={{ width: '60px' }} id="new" onClick={() => addNew()}>
             <Icon icon="vaadin:plus"></Icon>
             <Tooltip position="end-bottom" slot="tooltip" text="Add a new todo"></Tooltip>
           </Button>
           <FormLayout>
-            <ComboBox<string> label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
-            <TextField autocomplete="off" label="Description" {...field(model.description)} />
-            <IntegerField label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
+            <ComboBox<string> disabled={offline} label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
+            <TextField disabled={offline} autocomplete="off" label="Description" {...field(model.description)} />
+            <IntegerField disabled={offline} label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
             <LocalizedDatePicker
+              disabled={offline}
               autoselect
               autoOpenDisabled
               label="Deadline"
@@ -69,6 +70,7 @@ export default function TodoView(): JSX.Element {
           </FormLayout>
           <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
           <FormButtons
+            disabled={offline}
             adding={adding}
             assigned={assigned}
             invalid={invalid}
@@ -77,12 +79,12 @@ export default function TodoView(): JSX.Element {
           />
         </div>
         <div className="flex flex-col m-m shadow-s p-s flex-grow">
-          <TodoGrid current={value} todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
+          <TodoGrid readonly={offline} current={value} todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
           <Button
             style={{ alignSelf: 'start' }}
             theme="error"
             className="mt-m"
-            disabled={noDone() || !hasAccess({ rolesAllowed: ['ROLE_ADMIN'] })}
+            disabled={noDone() || !hasAccess({ rolesAllowed: ['ROLE_ADMIN'] }) || offline}
             onClick={remove}
           >
             <Icon icon="vaadin:trash"></Icon>

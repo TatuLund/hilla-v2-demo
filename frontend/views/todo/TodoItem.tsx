@@ -7,6 +7,7 @@ type Props = {
   todo: Todo;
   onChangeStatus: (todo: Todo, value: boolean | undefined) => void;
   onClick: (todo: Todo) => void;
+  readonly: boolean;
   highlight: boolean;
 };
 
@@ -19,13 +20,14 @@ type Props = {
  * @param {Function} props.onClick - The function to handle click event.
  * @returns {JSX.Element} The rendered todo item.
  */
-export function TodoItem({ todo, onChangeStatus, onClick, highlight }: Props): JSX.Element {
+export function TodoItem({ todo, onChangeStatus, onClick, highlight, readonly }: Props): JSX.Element {
   // onCheckedChanged is called also when Checkbox value is changed programmatically
   // thus using onClick. This is a workaround for the issue. Note that the value of
   // the checkbox is not updated when clicked, thus the value is inverted.
   return (
     <>
       <Checkbox
+        disabled={readonly}
         className={highlight ? 'bg-primary-10' : ''}
         checked={todo.done}
         onClick={({ currentTarget }) => onChangeStatus(todo, !currentTarget.checked)}

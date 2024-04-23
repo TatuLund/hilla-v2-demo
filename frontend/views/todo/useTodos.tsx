@@ -9,6 +9,8 @@ import TodoModel from 'Frontend/generated/com/example/application/data/TodoModel
 import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 import { FutureWeekdayAndRequired } from '../data/validators';
+import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
+import { set } from 'date-fns';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
@@ -37,27 +39,50 @@ export function useTodos() {
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
   const dateField = useFormPart(model.deadline);
+  const [offline, setOffline] = useState(false);
+  var connectionStateStore: ConnectionStateStore | undefined;
+
+  // Listen connection state changes
+  const connectionStateListener = () => {
+    setOffline(connectionStateStore?.state === ConnectionState.CONNECTION_LOST);
+  };
+
+  function setupOfflineListener() {
+    const $wnd = window as any;
+    if ($wnd.Vaadin?.connectionState) {
+      connectionStateStore = $wnd.Vaadin.connectionState as ConnectionStateStore;
+      connectionStateStore.addStateChangeListener(connectionStateListener);
+      connectionStateListener();
+    }
+  }
 
   useEffect(() => {
     (async () => {
+      setupOfflineListener();
       dateField.addValidator(new FutureWeekdayAndRequired());
       clearForm();
-      setTodos(await TodoEndpoint.findAll());
-      setUserInfo(await UserInfoService.getUserInfo());
-      if (!subscription) {
-        setSubscription(
-          EventEndpoint.getEventsCancellable().onNext((event: Message) => {
-            if (event.messageType == MessageType.EDITING) {
-              Notification.show(event.data, { theme: 'warning' });
-            } else {
-              Notification.show(event.data, { theme: 'success' });
-              setTimeout(async () => {
-                // Wait 3 seconds before updating the list of todos
-                setTodos(await TodoEndpoint.findAll());
-              }, 3000);
-            }
-          })
-        );
+      if (connectionStateStore?.state === ConnectionState.CONNECTION_LOST) {
+        setTodos(JSON.parse(localStorage.getItem('todos') || '[]'));
+      } else {
+        const fetched = await TodoEndpoint.findAll();
+        setTodos(fetched);
+        localStorage.setItem('todos', JSON.stringify(fetched));
+        setUserInfo(await UserInfoService.getUserInfo());
+        if (!subscription) {
+          setSubscription(
+            EventEndpoint.getEventsCancellable().onNext((event: Message) => {
+              if (event.messageType == MessageType.EDITING) {
+                Notification.show(event.data, { theme: 'warning' });
+              } else {
+                Notification.show(event.data, { theme: 'success' });
+                setTimeout(async () => {
+                  // Wait 3 seconds before updating the list of todos
+                  setTodos(await TodoEndpoint.findAll());
+                }, 3000);
+              }
+            })
+          );
+        }
       }
     })();
     return () => {
@@ -151,7 +176,20 @@ export function useTodos() {
     setTodos(todos.map((item) => (item.id === todo.id ? saved : item)));
   }
 
-  return [todos, adding, model, value as Todo, remove, addNew, changeStatus, edit, submit, field, invalid] as const;
+  return [
+    todos,
+    adding,
+    model,
+    value as Todo,
+    remove,
+    addNew,
+    changeStatus,
+    edit,
+    submit,
+    field,
+    invalid,
+    offline,
+  ] as const;
 }
 
 /**

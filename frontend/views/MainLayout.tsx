@@ -5,7 +5,7 @@ import { DrawerToggle } from '@hilla/react-components/DrawerToggle.js';
 import { useAuth } from 'Frontend/auth.js';
 import Placeholder from 'Frontend/components/placeholder/Placeholder';
 import { useRouteMetadata } from 'Frontend/util/routing';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Item } from '@hilla/react-components/Item.js';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/routes.js';
