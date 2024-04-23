@@ -10,7 +10,6 @@ import MessageType from 'Frontend/generated/com/example/application/services/Eve
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 import { FutureWeekdayAndRequired } from '../data/validators';
 import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
-import { set } from 'date-fns';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
