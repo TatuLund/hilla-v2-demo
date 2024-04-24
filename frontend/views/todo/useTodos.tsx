@@ -67,27 +67,31 @@ export function useTodos() {
         setTodos(fetched);
         localStorage.setItem('todos', JSON.stringify(fetched));
         setUserInfo(await UserInfoService.getUserInfo());
-        if (!subscription) {
-          setSubscription(
-            EventEndpoint.getEventsCancellable().onNext((event: Message) => {
-              if (event.messageType == MessageType.EDITING) {
-                Notification.show(event.data, { theme: 'warning' });
-              } else {
-                Notification.show(event.data, { theme: 'success' });
-                setTimeout(async () => {
-                  // Wait 3 seconds before updating the list of todos
-                  setTodos(await TodoEndpoint.findAll());
-                }, 3000);
-              }
-            })
-          );
-        }
+        subscribeEventEndpoint();
       }
     })();
     return () => {
       subscription?.cancel();
     };
   }, []);
+
+  function subscribeEventEndpoint() {
+    if (!subscription) {
+      setSubscription(EventEndpoint.getEventsCancellable().onNext(onMessage));
+    }
+  }
+
+  function onMessage(event: Message) {
+    if (event.messageType == MessageType.EDITING) {
+      Notification.show(event.data, { theme: 'warning' });
+    } else {
+      Notification.show(event.data, { theme: 'success' });
+      setTimeout(async () => {
+        // Wait 3 seconds before updating the list of todos
+        setTodos(await TodoEndpoint.findAll());
+      }, 3000);
+    }
+  }
 
   /**
    * Removes the done todos from the database and updates the todos state.
