@@ -9,31 +9,16 @@ import { Notification } from '@hilla/react-components/Notification.js';
 import { Subscription } from '@hilla/frontend';
 import Message from 'Frontend/generated/com/example/application/services/EventService/Message';
 import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
+import { useOffline } from 'Frontend/util/useOffline';
 
 function useStats() {
   const [stats, setStats] = useState<Stats>({ priorityCounts: [0, 0, 0, 0, 0], deadlines: {}, assigned: 0, done: 0 });
   const [subscription, setSubscription] = useState<Subscription<Message>>();
-  const [offline, setOffline] = useState(false);
-  var connectionStateStore: ConnectionStateStore | undefined;
-
-  // Listen connection state changes
-  const connectionStateListener = () => {
-    setOffline(connectionStateStore?.state === ConnectionState.CONNECTION_LOST);
-  };
-
-  function setupOfflineListener() {
-    const $wnd = window as any;
-    if ($wnd.Vaadin?.connectionState) {
-      connectionStateStore = $wnd.Vaadin.connectionState as ConnectionStateStore;
-      connectionStateStore.addStateChangeListener(connectionStateListener);
-      connectionStateListener();
-    }
-  }
+  const { offline, isOffline } = useOffline();
 
   useEffect(() => {
     (async () => {
-      setupOfflineListener();
-      if (connectionStateStore?.state === ConnectionState.CONNECTION_LOST) {
+      if (isOffline()) {
         setStats(JSON.parse(localStorage.getItem('stats') || '[]'));
       } else {
         const fetched = await StatsEndpoint.getStats();
@@ -47,12 +32,21 @@ function useStats() {
     };
   }, []);
 
+  /**
+   * Subscribes to the event endpoint.
+   * If there is no active subscription, it sets a new subscription using the `getEventsCancellable` method from the `EventEndpoint` class.
+   */
   function subscribeEventEndpoint() {
     if (!subscription) {
       setSubscription(EventEndpoint.getEventsCancellable().onNext(onMessage));
     }
   }
 
+  /**
+   * Handles the incoming message event.
+   * If the message type is INFO, it shows a success notification and updates the stats after a delay.
+   * @param event - The message event.
+   */
   function onMessage(event: Message) {
     if (event.messageType == MessageType.INFO) {
       Notification.show(event.data, { theme: 'success' });

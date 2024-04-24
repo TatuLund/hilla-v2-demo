@@ -9,7 +9,7 @@ import TodoModel from 'Frontend/generated/com/example/application/data/TodoModel
 import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 import { FutureWeekdayAndRequired } from '../data/validators';
-import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
+import { useOffline } from 'Frontend/util/useOffline';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
@@ -30,6 +30,7 @@ import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
  * - submit: A function to submit the form and save a todo.
  * - field: The form field object.
  * - invalid: A boolean indicating whether the form is invalid.
+ * - offline: A boolean indicating whether the app is offline.
  */
 export function useTodos() {
   const [subscription, setSubscription] = useState<Subscription<Message>>();
@@ -38,33 +39,20 @@ export function useTodos() {
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
   const dateField = useFormPart(model.deadline);
-  const [offline, setOffline] = useState(false);
-  var connectionStateStore: ConnectionStateStore | undefined;
+  const { offline, isOffline } = useOffline();
 
-  // Listen connection state changes
-  const connectionStateListener = () => {
-    setOffline(connectionStateStore?.state === ConnectionState.CONNECTION_LOST);
-  };
-
-  function setupOfflineListener() {
-    const $wnd = window as any;
-    if ($wnd.Vaadin?.connectionState) {
-      connectionStateStore = $wnd.Vaadin.connectionState as ConnectionStateStore;
-      connectionStateStore.addStateChangeListener(connectionStateListener);
-      connectionStateListener();
-    }
-  }
-
+  // Fetch all todos from the database and set the initial state.
   useEffect(() => {
     (async () => {
-      setupOfflineListener();
       dateField.addValidator(new FutureWeekdayAndRequired());
       clearForm();
-      if (connectionStateStore?.state === ConnectionState.CONNECTION_LOST) {
+      // If the connection is lost, load todos from local storage
+      if (isOffline()) {
         setTodos(JSON.parse(localStorage.getItem('todos') || '[]'));
       } else {
         const fetched = await TodoEndpoint.findAll();
         setTodos(fetched);
+        // Save todos to local storage
         localStorage.setItem('todos', JSON.stringify(fetched));
         setUserInfo(await UserInfoService.getUserInfo());
         subscribeEventEndpoint();
@@ -75,12 +63,21 @@ export function useTodos() {
     };
   }, []);
 
+  /**
+   * Subscribes to the event endpoint and sets up a callback function to handle incoming messages.
+   */
   function subscribeEventEndpoint() {
     if (!subscription) {
       setSubscription(EventEndpoint.getEventsCancellable().onNext(onMessage));
     }
   }
 
+  /**
+   * Handles the incoming message event.
+   * If the message type is 'EDITING', shows a warning notification.
+   * Otherwise, shows a success notification and updates the list of todos after a delay.
+   * @param event - The incoming message event.
+   */
   function onMessage(event: Message) {
     if (event.messageType == MessageType.EDITING) {
       Notification.show(event.data, { theme: 'warning' });
@@ -191,7 +188,7 @@ export function useTodos() {
     submit,
     field,
     invalid,
-    offline,
+    offline as boolean,
   ] as const;
 }
 
