@@ -39,25 +39,29 @@ function useStats() {
         const fetched = await StatsEndpoint.getStats();
         setStats(fetched);
         localStorage.setItem('stats', JSON.stringify(fetched));
-        if (!subscription) {
-          setSubscription(
-            EventEndpoint.getEventsCancellable().onNext((event) => {
-              if (event.messageType == MessageType.INFO) {
-                Notification.show(event.data, { theme: 'success' });
-                setTimeout(async () => {
-                  // Wait 3 seconds before updating the stats
-                  setStats(await StatsEndpoint.getStats());
-                }, 3000);
-              }
-            })
-          );
-        }
+        subscribeEventEndpoint();
       }
     })();
     return () => {
       subscription?.cancel();
     };
   }, []);
+
+  function subscribeEventEndpoint() {
+    if (!subscription) {
+      setSubscription(EventEndpoint.getEventsCancellable().onNext(onMessage));
+    }
+  }
+
+  function onMessage(event: Message) {
+    if (event.messageType == MessageType.INFO) {
+      Notification.show(event.data, { theme: 'success' });
+      setTimeout(async () => {
+        // Wait 3 seconds before updating the stats
+        setStats(await StatsEndpoint.getStats());
+      }, 3000);
+    }
+  }
 
   function deadlineDates(): string[] {
     return Object.keys(stats.deadlines).map((key) => {
