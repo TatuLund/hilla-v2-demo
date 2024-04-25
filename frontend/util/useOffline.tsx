@@ -1,18 +1,46 @@
 import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
 import { useEffect, useState } from 'react';
 
+/**
+ * Represents the offline hook.
+ */
 type OfflineHook = {
   offline: boolean;
   isOffline: () => boolean;
 };
 
-export function useOffline() : OfflineHook {
+/**
+ * Represents a callback function that is invoked when the offline status changes.
+ * @param offline - A boolean value indicating whether the user is offline or not.
+ */
+type OfflineChangedListener = (offline: boolean) => void;
+
+/**
+ * Represents the props for the Offline component.
+ */
+type OfflineProps = {
+  onOfflineChange?: OfflineChangedListener;
+};
+
+/**
+ * Custom hook to handle offline state in the application.
+ * @param {OfflineProps} props - Optional props for the hook. Use { onOfflineChange : OfflineChangedListener } a callback function that is invoked when the offline status changes.
+ * @returns {OfflineHook} An object containing the offline state and a function to check if the application is offline.
+ */
+export function useOffline(props?: OfflineProps): OfflineHook {
   const [offline, setOffline] = useState(false);
   var connectionStateStore: ConnectionStateStore | undefined;
+  var internalState = isOffline();
 
   // Listen connection state changes
   const connectionStateListener = () => {
-    setOffline(isOffline());
+    const newState = isOffline();
+    const changed = newState != internalState ? true : false;
+    setOffline(newState);
+    internalState = newState;
+    if (changed) {
+      props?.onOfflineChange?.(internalState);
+    }
   };
 
   /**

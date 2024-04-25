@@ -39,7 +39,11 @@ export function useTodos() {
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
   const dateField = useFormPart(model.deadline);
-  const { offline, isOffline } = useOffline();
+  const { offline, isOffline } = useOffline({ onOfflineChange: onOfflineMessage });
+
+  function onOfflineMessage(state: boolean) {
+    Notification.show(state ? 'You are offline' : 'You are online', { theme: state ? 'error' : 'success' });
+  }
 
   // Fetch all todos from the database and set the initial state.
   useEffect(() => {
