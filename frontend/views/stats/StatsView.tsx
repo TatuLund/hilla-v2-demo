@@ -14,16 +14,16 @@ import { useOffline } from 'Frontend/util/useOffline';
 function useStats() {
   const [stats, setStats] = useState<Stats>({ priorityCounts: [0, 0, 0, 0, 0], deadlines: {}, assigned: 0, done: 0 });
   const [subscription, setSubscription] = useState<Subscription<Message>>();
-  const { offline, isOffline } = useOffline();
+  const { isOffline, get, store } = useOffline();
 
   useEffect(() => {
     (async () => {
       if (isOffline()) {
-        setStats(JSON.parse(localStorage.getItem('stats') || '[]'));
+        setStats(get('stats'));
       } else {
         const fetched = await StatsEndpoint.getStats();
         setStats(fetched);
-        localStorage.setItem('stats', JSON.stringify(fetched));
+        store('stats', fetched);
         subscribeEventEndpoint();
       }
     })();

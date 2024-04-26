@@ -39,7 +39,7 @@ export function useTodos() {
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
   const dateField = useFormPart(model.deadline);
-  const { offline, isOffline } = useOffline({ onOfflineChange: onOfflineMessage });
+  const { offline, isOffline, store, get } = useOffline({ onOfflineChange: onOfflineMessage });
 
   function onOfflineMessage(state: boolean) {
     Notification.show(state ? 'You are offline' : 'You are online', { theme: state ? 'error' : 'success' });
@@ -52,12 +52,12 @@ export function useTodos() {
       clearForm();
       // If the connection is lost, load todos from local storage
       if (isOffline()) {
-        setTodos(JSON.parse(localStorage.getItem('todos') || '[]'));
+        setTodos(get('todos'));
       } else {
         const fetched = await TodoEndpoint.findAll();
         setTodos(fetched);
         // Save todos to local storage
-        localStorage.setItem('todos', JSON.stringify(fetched));
+        store('todos', fetched);
         setUserInfo(await UserInfoService.getUserInfo());
         subscribeEventEndpoint();
       }

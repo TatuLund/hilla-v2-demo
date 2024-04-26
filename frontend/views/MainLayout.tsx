@@ -13,6 +13,7 @@ import css from './MainLayout.module.css';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import { RouteObjectWithAuth } from '@hilla/react-auth';
+import { useOffline } from 'Frontend/util/useOffline';
 
 /**
  * Represents a menu route in the MainLayout component.
@@ -70,10 +71,13 @@ export default function MainLayout() {
    * When clicked, it logs the user out and navigates to the login page.
    */
   function LogoutButton() {
+    const { clearCache } = useOffline();
+
     return (
       <Button
         className="flex-grow"
         onClick={async () => {
+          clearCache();
           logout();
           navigate('/login');
         }}

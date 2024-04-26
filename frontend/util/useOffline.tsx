@@ -7,6 +7,9 @@ import { useEffect, useState } from 'react';
 type OfflineHook = {
   offline: boolean;
   isOffline: () => boolean;
+  clearCache: () => void;
+  store: (key: string, value: any) => void;
+  get: (key: string) => any;
 };
 
 /**
@@ -20,6 +23,7 @@ type OfflineChangedListener = (offline: boolean) => void;
  */
 type OfflineProps = {
   onOfflineChange?: OfflineChangedListener;
+  cacheName?: string;
 };
 
 /**
@@ -31,6 +35,7 @@ export function useOffline(props?: OfflineProps): OfflineHook {
   const [offline, setOffline] = useState(false);
   var connectionStateStore: ConnectionStateStore | undefined;
   var internalState = isOffline();
+  const CACHE_NAME = props?.cacheName || 'offline-cache';
 
   // Listen connection state changes
   const connectionStateListener = () => {
@@ -42,6 +47,12 @@ export function useOffline(props?: OfflineProps): OfflineHook {
       props?.onOfflineChange?.(internalState);
     }
   };
+
+  useEffect(() => {
+    setupOfflineListener();
+    // Cleanup
+    return () => connectionStateStore?.removeStateChangeListener(connectionStateListener);
+  }, []);
 
   /**
    * Checks if the application is currently offline.
@@ -63,7 +74,40 @@ export function useOffline(props?: OfflineProps): OfflineHook {
     }
   }
 
-  useEffect(() => setupOfflineListener(), []);
+  /**
+   * Stores a value in the cache with the specified key.
+   *
+   * @param key - The key to store the value under.
+   * @param value - The value to store.
+   */
+  function store(key: string, value: any) {
+    const cache = getCache();
+    cache[key] = value;
+    localStorage.setItem(CACHE_NAME, JSON.stringify(cache));
+  }
 
-  return { offline: offline, isOffline: isOffline };
+  /**
+   * Retrieves the value associated with the specified key from the cache.
+   *
+   * @param key - The key of the value to retrieve.
+   * @returns The value associated with the specified key, or undefined if the key does not exist in the cache.
+   */
+  function get(key: string): any {
+    const cache = getCache();
+    return cache[key];
+  }
+
+  function getCache(): any {
+    const cache = localStorage.getItem(CACHE_NAME) || '{}';
+    return JSON.parse(cache);
+  }
+
+  /**
+   * Clears the cache by removing the item with the specified cache name from the local storage.
+   */
+  function clearCache() {
+    localStorage.removeItem(CACHE_NAME);
+  }
+
+  return { offline: offline, isOffline: isOffline, clearCache: clearCache, store: store, get: get };
 }
