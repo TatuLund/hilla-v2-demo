@@ -9,7 +9,6 @@ import { Suspense, useState } from 'react';
 import { Item } from '@hilla/react-components/Item.js';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/routes.js';
-import css from './MainLayout.module.css';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 import { Tooltip } from '@hilla/react-components/Tooltip.js';
 import { RouteObjectWithAuth } from '@hilla/react-auth';
@@ -139,10 +138,10 @@ export default function MainLayout() {
  */
 function MenuLink({ path, handle: { icon, title } }: MenuRoute) {
   return (
-    <NavLink className={({ isActive }) => `${css.navlink} ${isActive ? css.navlink_active : ''}`} key={path} to={path}>
+    <NavLink className={({ isActive }) => `${"navlink"} ${isActive ? "navlink_active" : ''}`} key={path} to={path}>
       {({ isActive }) => (
         <Item key={path} selected={isActive}>
-          <span className={`${icon} ${css.navicon}`} aria-hidden="true"></span>
+          <span className={`${icon} ${"navicon"}`} aria-hidden="true"></span>
           {title}
         </Item>
       )}

@@ -1,36 +1,45 @@
-import { Chart } from '@hilla/react-components/Chart.js';
-import { ChartSeries } from '@hilla/react-components/ChartSeries.js';
-import type { Options } from 'highcharts';
-import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
-import Stats from 'Frontend/generated/com/example/application/services/StatsEndpoint/Stats';
-import { EventEndpoint, StatsEndpoint } from 'Frontend/generated/endpoints';
-import { useEffect, useState } from 'react';
-import { Notification } from '@hilla/react-components/Notification.js';
-import { Subscription } from '@hilla/frontend';
-import Message from 'Frontend/generated/com/example/application/services/EventService/Message';
-import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
-import { useOffline } from 'Frontend/util/useOffline';
+import { Chart } from "@hilla/react-components/Chart.js";
+import { ChartSeries } from "@hilla/react-components/ChartSeries.js";
+import type { Options } from "highcharts";
+import MessageType from "Frontend/generated/com/example/application/services/EventService/MessageType";
+import Stats from "Frontend/generated/com/example/application/services/StatsEndpoint/Stats";
+import { EventEndpoint, StatsEndpoint } from "Frontend/generated/endpoints";
+import { useEffect, useState } from "react";
+import { Notification } from "@hilla/react-components/Notification.js";
+import { Subscription } from "@hilla/frontend";
+import Message from "Frontend/generated/com/example/application/services/EventService/Message";
+import { ConnectionState, ConnectionStateStore } from "@vaadin/common-frontend";
+import { useOffline } from "Frontend/util/useOffline";
+import { sub } from "date-fns";
 
 function useStats() {
-  const [stats, setStats] = useState<Stats>({ priorityCounts: [0, 0, 0, 0, 0], deadlines: {}, assigned: 0, done: 0 });
+  const [stats, setStats] = useState<Stats>({
+    priorityCounts: [0, 0, 0, 0, 0],
+    deadlines: {},
+    assigned: 0,
+    done: 0,
+  });
   const [subscription, setSubscription] = useState<Subscription<Message>>();
   const { isOffline, get, store } = useOffline();
 
   useEffect(() => {
     (async () => {
       if (isOffline()) {
-        setStats(get('stats'));
+        setStats(get("stats"));
       } else {
         const fetched = await StatsEndpoint.getStats();
         setStats(fetched);
-        store('stats', fetched);
-        subscribeEventEndpoint();
+        store("stats", fetched);
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    subscribeEventEndpoint();
     return () => {
       subscription?.cancel();
     };
-  }, []);
+  }, [subscription]);
 
   /**
    * Subscribes to the event endpoint.
@@ -49,7 +58,7 @@ function useStats() {
    */
   function onMessage(event: Message) {
     if (event.messageType == MessageType.INFO) {
-      Notification.show(event.data, { theme: 'success' });
+      Notification.show(event.data, { theme: "success" });
       setTimeout(async () => {
         // Wait 3 seconds before updating the stats
         setStats(await StatsEndpoint.getStats());
@@ -82,13 +91,13 @@ function getChartOptions(): Options {
           (this.point.name ? this.point.name : this.point.category) +
           ": <b style='color: var(--lumo-primary-text-color)'>" +
           this.point.y +
-          '</b>'
+          "</b>"
         );
       },
     },
     yAxis: {
       title: {
-        text: 'Count',
+        text: "Count",
       },
     },
     plotOptions: {
@@ -108,21 +117,37 @@ export default function StatsView() {
   return (
     <>
       <div className="flex flex-row">
-        <Chart additionalOptions={getChartOptions()} key="priorities" title="Priorities">
+        <Chart
+          additionalOptions={getChartOptions()}
+          key="priorities"
+          title="Priorities"
+        >
           <ChartSeries
             type="pie"
             values={[
-              { name: '1', y: stats?.priorityCounts[0] },
-              { name: '2', y: stats?.priorityCounts[1] },
-              { name: '3', y: stats?.priorityCounts[2] },
-              { name: '4', y: stats?.priorityCounts[3] },
-              { name: '5', y: stats?.priorityCounts[4] },
+              { name: "1", y: stats?.priorityCounts[0] },
+              { name: "2", y: stats?.priorityCounts[1] },
+              { name: "3", y: stats?.priorityCounts[2] },
+              { name: "4", y: stats?.priorityCounts[3] },
+              { name: "5", y: stats?.priorityCounts[4] },
             ]}
           ></ChartSeries>
         </Chart>
-        <Chart additionalOptions={getChartOptions()} key="status" title="Status">
-          <ChartSeries title="Assigned" type="column" values={[{ name: 'Assigned', y: stats?.assigned }]}></ChartSeries>{' '}
-          <ChartSeries title="Done" type="column" values={[{ name: 'Done', y: stats?.done }]}></ChartSeries>
+        <Chart
+          additionalOptions={getChartOptions()}
+          key="status"
+          title="Status"
+        >
+          <ChartSeries
+            title="Assigned"
+            type="column"
+            values={[{ name: "Assigned", y: stats?.assigned }]}
+          ></ChartSeries>{" "}
+          <ChartSeries
+            title="Done"
+            type="column"
+            values={[{ name: "Done", y: stats?.done }]}
+          ></ChartSeries>
         </Chart>
       </div>
       <Chart

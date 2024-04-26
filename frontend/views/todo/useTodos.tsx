@@ -1,15 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useForm, useFormPart } from '@hilla/react-form';
-import { EventEndpoint, TodoEndpoint, UserInfoService } from 'Frontend/generated/endpoints';
-import { EndpointError, Subscription } from '@hilla/frontend';
-import type Todo from 'Frontend/generated/com/example/application/data/Todo';
-import { Notification } from '@hilla/react-components/Notification.js';
-import Message from 'Frontend/generated/com/example/application/services/EventService/Message';
-import TodoModel from 'Frontend/generated/com/example/application/data/TodoModel';
-import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
-import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
-import { FutureWeekdayAndRequired } from '../data/validators';
-import { useOffline } from 'Frontend/util/useOffline';
+import { useEffect, useState } from "react";
+import { useForm, useFormPart } from "@hilla/react-form";
+import {
+  EventEndpoint,
+  TodoEndpoint,
+  UserInfoService,
+} from "Frontend/generated/endpoints";
+import { EndpointError, Subscription } from "@hilla/frontend";
+import type Todo from "Frontend/generated/com/example/application/data/Todo";
+import { Notification } from "@hilla/react-components/Notification.js";
+import Message from "Frontend/generated/com/example/application/services/EventService/Message";
+import TodoModel from "Frontend/generated/com/example/application/data/TodoModel";
+import MessageType from "Frontend/generated/com/example/application/services/EventService/MessageType";
+import UserInfo from "Frontend/generated/com/example/application/services/UserInfo";
+import { FutureWeekdayAndRequired } from "../data/validators";
+import { useOffline } from "Frontend/util/useOffline";
+import { sub } from "date-fns";
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
@@ -37,12 +42,19 @@ export function useTodos() {
   const [todos, setTodos] = useState(Array<Todo>());
   const [adding, setAdding] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo>();
-  const { value, model, field, invalid, submit, read, clear } = useForm(TodoModel, { onSubmit: submitTodo });
+  const { value, model, field, invalid, submit, read, clear } = useForm(
+    TodoModel,
+    { onSubmit: submitTodo }
+  );
   const dateField = useFormPart(model.deadline);
-  const { offline, isOffline, store, get } = useOffline({ onOfflineChange: onOfflineMessage });
+  const { offline, isOffline, store, get } = useOffline({
+    onOfflineChange: onOfflineMessage,
+  });
 
   function onOfflineMessage(state: boolean) {
-    Notification.show(state ? 'You are offline' : 'You are online', { theme: state ? 'error' : 'success' });
+    Notification.show(state ? "You are offline" : "You are online", {
+      theme: state ? "error" : "success",
+    });
   }
 
   // Fetch all todos from the database and set the initial state.
@@ -52,20 +64,23 @@ export function useTodos() {
       clearForm();
       // If the connection is lost, load todos from local storage
       if (isOffline()) {
-        setTodos(get('todos'));
+        setTodos(get("todos"));
       } else {
         const fetched = await TodoEndpoint.findAll();
         setTodos(fetched);
         // Save todos to local storage
-        store('todos', fetched);
+        store("todos", fetched);
         setUserInfo(await UserInfoService.getUserInfo());
-        subscribeEventEndpoint();
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    subscribeEventEndpoint();
     return () => {
       subscription?.cancel();
     };
-  }, []);
+  }, [subscription]);
 
   /**
    * Subscribes to the event endpoint and sets up a callback function to handle incoming messages.
@@ -84,9 +99,9 @@ export function useTodos() {
    */
   function onMessage(event: Message) {
     if (event.messageType == MessageType.EDITING) {
-      Notification.show(event.data, { theme: 'warning' });
+      Notification.show(event.data, { theme: "warning" });
     } else {
-      Notification.show(event.data, { theme: 'success' });
+      Notification.show(event.data, { theme: "success" });
       setTimeout(async () => {
         // Wait 3 seconds before updating the list of todos
         setTodos(await TodoEndpoint.findAll());
@@ -123,7 +138,9 @@ export function useTodos() {
       if (adding) {
         setTodos([...todos, newTodo]);
       } else {
-        setTodos(todos.map((item) => (item.id === newTodo.id ? newTodo : item)));
+        setTodos(
+          todos.map((item) => (item.id === newTodo.id ? newTodo : item))
+        );
       }
     }
   }
@@ -138,7 +155,13 @@ export function useTodos() {
     const id = todo.id ? todo.id : 0;
     const message: Message = {
       id: id,
-      data: userInfo?.fullName + ' (' + userInfo?.name + ') is editing "' + todo.task + '"',
+      data:
+        userInfo?.fullName +
+        " (" +
+        userInfo?.name +
+        ') is editing "' +
+        todo.task +
+        '"',
       messageType: MessageType.EDITING,
     };
     EventEndpoint.send(message);
@@ -160,7 +183,7 @@ export function useTodos() {
    */
   function clearForm() {
     const empty = TodoModel.createEmptyValue();
-    empty.task = ''; // ComboBox does not accept undefined
+    empty.task = ""; // ComboBox does not accept undefined
     empty.priority = 0; // IntegerField does not accept undefined
     read(empty);
   }
@@ -172,7 +195,10 @@ export function useTodos() {
    * @param done - The new status of the todo.
    * @returns A promise that resolves when the update is complete.
    */
-  async function changeStatus(todo: Todo, done: boolean | undefined): Promise<void> {
+  async function changeStatus(
+    todo: Todo,
+    done: boolean | undefined
+  ): Promise<void> {
     // Update status of the Todo, this function is passed down to TodoItem via TodoGrid
     const isDone = done ? done : false;
     const newTodo = { ...todo, done: isDone };
@@ -205,8 +231,8 @@ function handleError(error: unknown) {
   // Handle errors from the backend, which are thrown as EndpointError with JSON message.
   // Backend performs validation.
   if (error instanceof EndpointError) {
-    Notification.show(error.message, { theme: 'error' });
+    Notification.show(error.message, { theme: "error" });
   } else {
-    Notification.show('Error in saving', { theme: 'error' });
+    Notification.show("Error in saving", { theme: "error" });
   }
 }
