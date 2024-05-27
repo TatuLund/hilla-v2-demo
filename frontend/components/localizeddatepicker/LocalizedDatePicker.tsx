@@ -1,4 +1,4 @@
-import { DatePicker, DatePickerDate, DatePickerI18n, DatePickerProps } from '@hilla/react-components/DatePicker.js';
+import { DatePicker, DatePickerDate, DatePickerI18n, DatePickerProps } from '@vaadin/react-components/DatePicker.js';
 import dateFnsFormat from 'date-fns/format';
 import dateFnsParse from 'date-fns/parse';
 import { DatePicker as DatePickerWebComponent } from '@vaadin/date-picker/vaadin-date-picker.js';

@@ -1,6 +1,6 @@
 import type Todo from 'Frontend/generated/com/example/application/data/Todo';
-import { Checkbox } from '@hilla/react-components/Checkbox.js';
-import { Tooltip } from '@hilla/react-components/Tooltip.js';
+import { Checkbox } from '@vaadin/react-components/Checkbox.js';
+import { Tooltip } from '@vaadin/react-components/Tooltip.js';
 import Badge from 'Frontend/components/badge/Badge';
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
  * @param {Function} props.onClick - The function to handle click event.
  * @returns {JSX.Element} The rendered todo item.
  */
-export function TodoItem({ todo, onChangeStatus, onClick, highlight, readonly }: Props): JSX.Element {
+export default function TodoItem({ todo, onChangeStatus, onClick, highlight, readonly }: Props): JSX.Element {
   // onCheckedChanged is called also when Checkbox value is changed programmatically
   // thus using onClick. This is a workaround for the issue. Note that the value of
   // the checkbox is not updated when clicked, thus the value is inverted.

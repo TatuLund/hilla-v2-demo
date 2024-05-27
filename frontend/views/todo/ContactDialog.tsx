@@ -1,15 +1,15 @@
-import { Grid, GridSorterDirection } from '@hilla/react-components/Grid.js';
+import { Grid, GridSorterDirection } from '@vaadin/react-components/Grid.js';
 import { GridDataProviderCallback, GridDataProviderParams } from '@vaadin/grid';
-import { GridColumn } from '@hilla/react-components/GridColumn.js';
-import { GridSortColumn } from '@hilla/react-components/GridSortColumn.js';
+import { GridColumn } from '@vaadin/react-components/GridColumn.js';
+import { GridSortColumn } from '@vaadin/react-components/GridSortColumn.js';
 import Contact from 'Frontend/generated/com/example/application/data/Contact';
-import { Dialog } from '@hilla/react-components/Dialog.js';
+import { Dialog } from '@vaadin/react-components/Dialog.js';
 import { ContactEndpoint } from 'Frontend/generated/endpoints';
-import { TextField } from '@hilla/react-components/TextField.js';
-import { Button } from '@hilla/react-components/Button.js';
+import { TextField } from '@vaadin/react-components/TextField.js';
+import { Button } from '@vaadin/react-components/Button.js';
 import { useCallback, useState } from 'react';
 import { Grid as GridComponent } from '@vaadin/grid';
-import { Icon } from '@hilla/react-components/Icon.js';
+import { Icon } from '@vaadin/react-components/Icon.js';
 
 /**
  * Props for the ContactDialog component.
@@ -77,7 +77,7 @@ function addTooltipToColumn(grid: GridComponent<Contact> | null, column: number)
  * @param {Function} props.onAssignContact - The function to be called when a contact is assigned.
  * @returns {JSX.Element} The rendered ContactDialog component.
  */
-export function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
+export default function ContactDialog({ opened, onAssignContact }: Props): JSX.Element {
   const [assigned, setAssigned] = useState<Contact[]>([]);
   const [dataProvider, filter, setFilter, direction, setDirection] = useDataProvider();
 

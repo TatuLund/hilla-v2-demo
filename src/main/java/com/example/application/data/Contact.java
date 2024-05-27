@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Nonnull;
 
 @Entity
 public class Contact extends AbstractEntity {

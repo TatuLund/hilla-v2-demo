@@ -2,7 +2,7 @@ package com.example.application.services;
 
 import org.springframework.stereotype.Service;
 
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Nonnull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.EmitFailureHandler;

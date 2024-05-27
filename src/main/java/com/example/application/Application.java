@@ -2,6 +2,7 @@ package com.example.application;
 
 import com.example.application.data.UserRepository;
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 
 import javax.sql.DataSource;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @Theme(value = "hilla-todo")
+@PWA(name = "Hilla Todo Demo", shortName = "Todo", offlineResources = { "images/logo.png" })
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {

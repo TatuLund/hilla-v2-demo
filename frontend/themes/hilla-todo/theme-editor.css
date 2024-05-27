@@ -1,0 +1,7 @@
+/*
+ * This file has been created by the Vaadin Theme Editor. Please note that
+ * manual changes to individual CSS properties may be overwritten by the theme editor.
+ */
+.dummy { color:red; }
+
+h1.editor-viewh1 { font-size:var(--lumo-font-size-l); }

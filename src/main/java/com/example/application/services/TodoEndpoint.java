@@ -16,9 +16,9 @@ import com.example.application.data.Todo;
 import com.example.application.data.TodoRepository;
 import com.example.application.services.EventService.Message;
 
-import dev.hilla.BrowserCallable;
-import dev.hilla.Nonnull;
-import dev.hilla.exception.EndpointException;
+import com.vaadin.hilla.BrowserCallable;
+import com.vaadin.hilla.Nonnull;
+import com.vaadin.hilla.exception.EndpointException;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 

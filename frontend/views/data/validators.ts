@@ -1,4 +1,4 @@
-import { Validator } from '@hilla/form';
+import { Validator } from '@vaadin/hilla-lit-form';
 
 /**
  * Validator that checks if a given date is in the future and not a weekend day.

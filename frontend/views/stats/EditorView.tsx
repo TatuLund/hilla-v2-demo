@@ -1,11 +1,15 @@
-import { Grid } from '@hilla/react-components/Grid.js';
-import { GridColumn } from '@hilla/react-components/GridColumn.js';
-import { TextField } from '@hilla/react-components/TextField.js';
-import { Button } from '@hilla/react-components/Button.js';
-import { useState } from 'react';
-import { IntegerField } from '@hilla/react-components/IntegerField.js';
-import { DatePicker } from '@hilla/react-components/DatePicker.js';
-import { Item } from '@hilla/react-components/Item.js';
+import { MenuBar } from '@vaadin/react-components/MenuBar';
+import { Grid, type GridElement } from '@vaadin/react-components/Grid.js';
+import { GridColumn } from '@vaadin/react-components/GridColumn.js';
+import { TextField } from '@vaadin/react-components/TextField.js';
+import { Button } from '@vaadin/react-components/Button.js';
+import { ContextMenu, ContextMenuItemSelectedEvent } from '@vaadin/react-components/ContextMenu.js';
+import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { IntegerField } from '@vaadin/react-components/IntegerField.js';
+import { DatePicker } from '@vaadin/react-components/DatePicker.js';
+import { Item } from '@vaadin/react-components/Item.js';
+import { Grid as GridComponent } from '@vaadin/grid';
+import { Notification } from "@vaadin/react-components/Notification.js";
 
 export default function EditorView(): JSX.Element {
   const [gridVisible, setGridVisible] = useState(true);
@@ -38,6 +42,9 @@ export function EditorGrid({ visible }: Props): JSX.Element {
     { id: 2, name: 'Jane', age: 30, date: new Date() },
     { id: 3, name: 'Tom', age: 40, date: new Date() },
   ]);
+  const [menuItems] = useState([{ text: 'View' }, { text: 'Edit' }, { text: 'Delete' }]);
+  const gridRef = useRef<GridElement>(null);
+  const [contextItem, setContextItem] = useState<Item | undefined>(undefined);
 
   function updateItem(item: Item | null) {
     if (item) {
@@ -48,9 +55,31 @@ export function EditorGrid({ visible }: Props): JSX.Element {
     }
   }
 
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (grid) {
+      // Workaround: Prevent opening context menu on header row.
+      // @ts-expect-error vaadin-contextmenu isn't a GridElement event.
+      grid.addEventListener('vaadin-contextmenu', (e) => {
+        if (grid.getEventContext(e).section !== 'body') {
+          e.stopPropagation();
+        } else {
+          const item = grid.getEventContext(e).item;
+          setContextItem(item);
+          console.log(item);
+        }
+      });
+    }
+  }, []);
+
+  function onContextMenu(e: ContextMenuItemSelectedEvent) {
+    Notification.show(contextItem?.name + ' clicked');
+  }
+
   return (
     <div hidden={!visible}>
-      <Grid items={items}>
+      <ContextMenu onItemSelected={onContextMenu} items={menuItems}>
+      <Grid items={items}  ref={gridRef}>
         <GridColumn<Item>
           header="Name"
           renderer={({ item }) => {
@@ -110,6 +139,7 @@ export function EditorGrid({ visible }: Props): JSX.Element {
           )}
         ></GridColumn>
       </Grid>
+      </ContextMenu>
     </div>
   );
 }

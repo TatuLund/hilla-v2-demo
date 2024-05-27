@@ -3,7 +3,7 @@ package com.example.application.services;
 import java.util.Collection;
 import java.util.Collections;
 
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Nonnull;
 
 public class UserInfo {
 

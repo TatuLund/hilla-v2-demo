@@ -10,10 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.application.data.Contact;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-import dev.hilla.BrowserCallable;
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.BrowserCallable;
+import com.vaadin.hilla.Nonnull;
 
 /**
  * This class represents the endpoint for managing contacts.

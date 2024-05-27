@@ -1,16 +1,14 @@
-import { Chart } from "@hilla/react-components/Chart.js";
-import { ChartSeries } from "@hilla/react-components/ChartSeries.js";
+import { Chart } from "@vaadin/react-components-pro/Chart.js";
+import { ChartSeries } from "@vaadin/react-components-pro/ChartSeries.js";
 import type { Options } from "highcharts";
 import MessageType from "Frontend/generated/com/example/application/services/EventService/MessageType";
 import Stats from "Frontend/generated/com/example/application/services/StatsEndpoint/Stats";
 import { EventEndpoint, StatsEndpoint } from "Frontend/generated/endpoints";
 import { useEffect, useState } from "react";
-import { Notification } from "@hilla/react-components/Notification.js";
-import { Subscription } from "@hilla/frontend";
+import { Notification } from "@vaadin/react-components/Notification.js";
+import { Subscription } from "@vaadin/hilla-frontend";
 import Message from "Frontend/generated/com/example/application/services/EventService/Message";
-import { ConnectionState, ConnectionStateStore } from "@vaadin/common-frontend";
 import { useOffline } from "Frontend/util/useOffline";
-import { sub } from "date-fns";
 
 function useStats() {
   const [stats, setStats] = useState<Stats>({

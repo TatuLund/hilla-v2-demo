@@ -1,17 +1,17 @@
-import { AppLayout } from '@hilla/react-components/AppLayout.js';
-import { Avatar } from '@hilla/react-components/Avatar.js';
-import { Button } from '@hilla/react-components/Button.js';
-import { DrawerToggle } from '@hilla/react-components/DrawerToggle.js';
+import { AppLayout } from '@vaadin/react-components/AppLayout.js';
+import { Avatar } from '@vaadin/react-components/Avatar.js';
+import { Button } from '@vaadin/react-components/Button.js';
+import { DrawerToggle } from '@vaadin/react-components/DrawerToggle.js';
 import { useAuth } from 'Frontend/auth.js';
 import Placeholder from 'Frontend/components/placeholder/Placeholder';
 import { useRouteMetadata } from 'Frontend/util/routing';
 import { Suspense, useState } from 'react';
-import { Item } from '@hilla/react-components/Item.js';
+import { Item } from '@vaadin/react-components/Item.js';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/routes.js';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
-import { Tooltip } from '@hilla/react-components/Tooltip.js';
-import { RouteObjectWithAuth } from '@hilla/react-auth';
+import { Tooltip } from '@vaadin/react-components/Tooltip.js';
+import { RouteObjectWithAuth } from '@vaadin/hilla-react-auth';
 import { useOffline } from 'Frontend/util/useOffline';
 
 /**

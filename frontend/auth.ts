@@ -1,4 +1,4 @@
-import { AuthContext, configureAuth } from '@hilla/react-auth';
+import { AuthContext, configureAuth } from '@vaadin/hilla-react-auth';
 import { UserInfoService } from 'Frontend/generated/endpoints';
 
 // Configure auth to use `UserInfoService.getUserInfo`

@@ -1,4 +1,4 @@
-import { Button } from '@hilla/react-components/Button.js';
+import { Button } from '@vaadin/react-components/Button.js';
 import { useAuth } from 'Frontend/auth';
 import Contact from 'Frontend/generated/com/example/application/data/Contact';
 

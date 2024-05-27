@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jose.jws.JwsAlgorithms;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
+import com.vaadin.hilla.route.RouteUtil;
 
 @EnableWebSecurity
 @Configuration
@@ -26,6 +27,12 @@ public class SecurityConfig extends VaadinWebSecurity {
     @Value("${com.example.application.app.secret}")
     private String authSecret;
 
+    private final RouteUtil routeUtil;
+
+    public SecurityConfig(RouteUtil routeUtil) {
+      this.routeUtil = routeUtil;
+    }
+ 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -47,7 +54,7 @@ public class SecurityConfig extends VaadinWebSecurity {
 
         // Icons from the line-awesome addon
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(new AntPathRequestMatcher("/images/*.png"),
+                .requestMatchers(routeUtil::isRouteAllowed, new AntPathRequestMatcher("/images/*.png"),
                         new AntPathRequestMatcher("/line-awesome/**/*.svg"))
                 .permitAll());
 
@@ -59,7 +66,7 @@ public class SecurityConfig extends VaadinWebSecurity {
         http.sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // Register your login view to the view access checker mechanism
-        setLoginView(http, "/login");
+        setLoginView(http, "/login", "/");
 
         // Enable stateless authentication
         setStatelessAuthentication(http,

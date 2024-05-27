@@ -1,5 +1,5 @@
 import type Todo from 'Frontend/generated/com/example/application/data/Todo';
-import { TodoItem } from './TodoItem';
+import TodoItem from './TodoItem';
 
 type Props = {
   todos: Todo[];
@@ -17,7 +17,7 @@ type Props = {
  * @param onClick - The callback function to handle click event on a todo item.
  * @returns The JSX element representing the todo grid.
  */
-export function TodoGrid({ todos, onChangeStatus, onClick, current, readonly }: Props): JSX.Element {
+export default function TodoGrid({ todos, onChangeStatus, onClick, current, readonly }: Props): JSX.Element {
   // Display list of todos in CSS Grid
   return (
     <>

@@ -2,7 +2,7 @@ package com.example.application.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;

@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import com.example.application.services.EventService.Message;
 
-import dev.hilla.BrowserCallable;
-import dev.hilla.EndpointSubscription;
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.BrowserCallable;
+import com.vaadin.hilla.EndpointSubscription;
+import com.vaadin.hilla.Nonnull;
 import jakarta.annotation.security.PermitAll;
 import reactor.core.publisher.Flux;
 

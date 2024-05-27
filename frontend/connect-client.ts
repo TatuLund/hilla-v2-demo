@@ -1,6 +1,6 @@
-import { MiddlewareContext } from '@hilla/frontend';
-import { MiddlewareNext } from '@hilla/frontend';
-import { ConnectClient } from '@hilla/frontend';
+import { MiddlewareContext } from '@vaadin/hilla-frontend';
+import { MiddlewareNext } from '@vaadin/hilla-frontend';
+import { ConnectClient } from '@vaadin/hilla-frontend';
 
 const client = new ConnectClient({
   prefix: 'connect',

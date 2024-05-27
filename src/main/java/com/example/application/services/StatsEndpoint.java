@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import com.example.application.data.TodoRepository;
 
-import dev.hilla.BrowserCallable;
+import com.vaadin.hilla.BrowserCallable;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.security.PermitAll;
 

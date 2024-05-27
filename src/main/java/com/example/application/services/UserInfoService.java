@@ -8,15 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.example.application.data.User;
 import com.example.application.data.UserRepository;
 
-import dev.hilla.BrowserCallable;
-import dev.hilla.Nonnull;
+import com.vaadin.hilla.BrowserCallable;
+import com.vaadin.hilla.Nonnull;
 import jakarta.annotation.security.PermitAll;
 
 @BrowserCallable
