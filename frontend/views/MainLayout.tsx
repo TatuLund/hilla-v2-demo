@@ -113,7 +113,7 @@ export default function MainLayout() {
     <AppLayout primarySection="drawer">
       <div slot="drawer" className="flex flex-col justify-between h-full p-m">
         <header className="flex flex-col gap-m">
-          <h1 className="text-l m-0">My App</h1>
+          <h1 className="text-l m-0">Todo App</h1>
           <Menu />
         </header>
         <DrawerFooter />
