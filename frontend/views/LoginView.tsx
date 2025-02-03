@@ -1,4 +1,5 @@
-import { LoginI18n, LoginOverlay } from '@vaadin/react-components/LoginOverlay.js';
+import { LoginI18n, LoginOverlay, LoginOverlayElement } from '@vaadin/react-components/LoginOverlay.js';
+import { PasswordFieldElement } from '@vaadin/react-components/PasswordField.js';
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from 'Frontend/auth.js';
@@ -33,6 +34,11 @@ export default function LoginView() {
 
   return (
     <LoginOverlay
+      ref={(element) => {
+        setTimeout(() => {
+          addCapsLockWarning();
+        }, 100);
+      }}
       opened
       error={hasError}
       noForgotPassword
@@ -48,4 +54,18 @@ export default function LoginView() {
       }}
     />
   );
+
+  function setWarning(field: PasswordFieldElement, e: KeyboardEvent) {
+    if (e.getModifierState('CapsLock')) {
+      field.helperText = 'Warning: Caps on';
+      field.style.setProperty('--vaadin-input-field-helper-color', 'var(--lumo-warning-text-color)');
+    } else {
+      field.helperText = '';
+    }
+  }
+
+  function addCapsLockWarning() {
+    const field = document.getElementsByTagName('vaadin-password-field')[0];
+    field?.addEventListener('keydown', (e) => setWarning(field, e));
+  }
 }

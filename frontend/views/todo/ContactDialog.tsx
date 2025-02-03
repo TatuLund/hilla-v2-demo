@@ -132,6 +132,7 @@ export default function ContactDialog({ opened, onAssignContact }: Props): JSX.E
           }}
           style={{ minWidth: '900px' }}
           selectedItems={assigned}
+          theme="column-borders row-stripes"
           onActiveItemChanged={({ detail: { value } }) => setAssigned(value ? [value] : [])}
           dataProvider={dataProvider}
         >

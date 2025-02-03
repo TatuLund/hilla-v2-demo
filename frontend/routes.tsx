@@ -6,6 +6,7 @@ import TodoView from 'Frontend/views/todo/TodoView.js';
 import StatsView from 'Frontend/views/stats/StatsView.js';
 import EditorView from 'Frontend/views/stats/EditorView.js';
 import GoogleChartView from 'Frontend/views/stats/GoogleChartView.js';
+import Checks from './views/stats/Checks';
 
 // const TodoView = lazy(async () => import('Frontend/views/todo/TodoView.js'));
 // const StatsView = lazy(async () => import('Frontend/views/stats/StatsView.js'));
@@ -49,6 +50,11 @@ export const routes: readonly RouteObject[] = protectRoutes([
         path: '/chart',
         element: <GoogleChartView />,
         handle: { icon: 'la la-table', title: 'GChart', requiresLogin: true },
+      },
+      {
+        path: '/checks',
+        element: <Checks />,
+        handle: { icon: 'la la-table', title: 'Checks', requiresLogin: true },
       },
     ],
   },

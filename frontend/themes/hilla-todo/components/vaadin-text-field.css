@@ -1,0 +1,3 @@
+:host(.uppercase) ::slotted(input) {
+  text-transform: uppercase;
+}

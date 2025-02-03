@@ -1,19 +1,21 @@
 import type Contact from 'Frontend/generated/com/example/application/data/Contact';
-import { FormLayout } from '@vaadin/react-components/FormLayout.js';
-import { ComboBox } from '@vaadin/react-components/ComboBox.js';
-import { TextField } from '@vaadin/react-components/TextField.js';
-import { Icon } from '@vaadin/react-components/Icon.js';
-import '@vaadin/icons';
-import { IntegerField } from '@vaadin/react-components/IntegerField.js';
-import { Button } from '@vaadin/react-components/Button.js';
-import { Tooltip } from '@vaadin/react-components/Tooltip.js';
+import { FormLayout } from '@vaadin/react-components/FormLayout';
+import { ComboBox } from '@vaadin/react-components/ComboBox';
+import { TextField } from '@vaadin/react-components/TextField';
+import { Icon } from '@vaadin/react-components/Icon';
+import { IntegerField } from '@vaadin/react-components/IntegerField';
+import { Button } from '@vaadin/react-components/Button';
+import { Tooltip } from '@vaadin/react-components/Tooltip';
 import TodoGrid from './TodoGrid';
 import ContactDialog from './ContactDialog';
 import { LocalizedDatePicker } from '../../components/localizeddatepicker/LocalizedDatePicker';
+import { Details } from '@vaadin/react-components/Details';
 import { useState } from 'react';
 import { useTodos } from './useTodos';
 import { useAuth } from 'Frontend/auth';
 import FormButtons from './FormButtons';
+
+
 
 export default function TodoView(): JSX.Element {
   const [todos, adding, model, value, remove, addNew, changeStatus, edit, submit, field, invalid, offline] = useTodos();
@@ -45,7 +47,12 @@ export default function TodoView(): JSX.Element {
     }
   }
 
-  // Use useForm to bind the fields with ...field directive.
+  const responsiveStepsForTwoColumnsFormLayout = [
+    { minWidth: '0', columns: 1 },
+    { minWidth: '700px', columns: 2 },
+    ];
+
+    // Use useForm to bind the fields with ...field directive.
   return (
     <>
       <div className="h-full flex flex-col">
@@ -54,7 +61,8 @@ export default function TodoView(): JSX.Element {
             <Icon icon="vaadin:plus"></Icon>
             <Tooltip position="end-bottom" slot="tooltip" text="Add a new todo"></Tooltip>
           </Button>
-          <FormLayout>
+          <Details summary="Form" opened>
+          <FormLayout theme={'spacing-xs'} responsiveSteps={responsiveStepsForTwoColumnsFormLayout}>
             <ComboBox<string> disabled={offline} label="Task" allowCustomValue items={presets} {...field(model.task)}></ComboBox>
             <TextField disabled={offline} autocomplete="off" label="Description" {...field(model.description)} />
             <IntegerField disabled={offline} label="Priority" stepButtonsVisible theme="align-right" {...field(model.priority)} />
@@ -68,6 +76,7 @@ export default function TodoView(): JSX.Element {
               {...field(model.deadline)}
             />
           </FormLayout>
+          </Details>
           <ContactDialog opened={dialogOpened} onAssignContact={assignTodo}></ContactDialog>
           <FormButtons
             disabled={offline}
@@ -81,7 +90,7 @@ export default function TodoView(): JSX.Element {
         <div className="flex flex-col m-m shadow-s p-s flex-grow">
           <TodoGrid readonly={offline} current={value} todos={todos} onClick={edit} onChangeStatus={(todo, value) => changeStatus(todo, value)}></TodoGrid>
           <Button
-            style={{ alignSelf: 'start' }}
+style={{ alignSelf: 'start' }}
             theme="error"
             className="mt-m"
             disabled={noDone() || !hasAccess({ rolesAllowed: ['ROLE_ADMIN'] }) || offline}
