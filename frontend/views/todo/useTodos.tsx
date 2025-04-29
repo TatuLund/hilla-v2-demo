@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
-import { useForm, useFormPart } from "@vaadin/hilla-react-form";
-import {
-  EventEndpoint,
-  TodoEndpoint,
-  UserInfoService,
-} from "Frontend/generated/endpoints";
-import { EndpointError, Subscription } from "@vaadin/hilla-frontend";
-import type Todo from "Frontend/generated/com/example/application/data/Todo";
-import { Notification } from "@vaadin/react-components/Notification.js";
-import Message from "Frontend/generated/com/example/application/services/EventService/Message";
-import TodoModel from "Frontend/generated/com/example/application/data/TodoModel";
-import MessageType from "Frontend/generated/com/example/application/services/EventService/MessageType";
-import UserInfo from "Frontend/generated/com/example/application/services/UserInfo";
-import { FutureWeekdayAndRequired } from "../data/validators";
-import { useOffline } from "Frontend/util/useOffline";
+import { useEffect } from 'react';
+import { useForm, useFormPart } from '@vaadin/hilla-react-form';
+import { EventEndpoint, TodoEndpoint, UserInfoService } from 'Frontend/generated/endpoints';
+import { EndpointError, Subscription } from '@vaadin/hilla-frontend';
+import type Todo from 'Frontend/generated/com/example/application/data/Todo';
+import { Notification } from '@vaadin/react-components/Notification.js';
+import Message from 'Frontend/generated/com/example/application/services/EventService/Message';
+import TodoModel from 'Frontend/generated/com/example/application/data/TodoModel';
+import MessageType from 'Frontend/generated/com/example/application/services/EventService/MessageType';
+import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
+import { FutureWeekdayAndRequired } from '../data/validators';
+import { useOffline } from 'Frontend/util/useOffline';
+import { Signal, useSignal } from '@vaadin/hilla-react-signals';
 
 // Use custom hook to fetch all todos from TodoEndpoint.findAll.
 // Also subscribe to EventEndpoint.getEventsCancellable to get notifications from the backend.
@@ -37,22 +34,19 @@ import { useOffline } from "Frontend/util/useOffline";
  * - offline: A boolean indicating whether the app is offline.
  */
 export function useTodos() {
-  const [subscription, setSubscription] = useState<Subscription<Message>>();
-  const [todos, setTodos] = useState(Array<Todo>());
-  const [adding, setAdding] = useState(true);
-  const [userInfo, setUserInfo] = useState<UserInfo>();
-  const { value, model, field, invalid, submit, read, clear } = useForm(
-    TodoModel,
-    { onSubmit: submitTodo }
-  );
+  const subscription = useSignal<Subscription<Message>>();
+  const todos = useSignal(Array<Todo>());
+  const adding = useSignal(true);
+  const userInfo = useSignal<UserInfo>();
+  const { value, model, field, invalid, submit, read } = useForm(TodoModel, { onSubmit: submitTodo });
   const dateField = useFormPart(model.deadline);
   const { offline, isOffline, store, get } = useOffline({
     onOfflineChange: onOfflineMessage,
   });
 
   function onOfflineMessage(state: boolean) {
-    Notification.show(state ? "You are offline" : "You are online", {
-      theme: state ? "error" : "success",
+    Notification.show(state ? 'You are offline' : 'You are online', {
+      theme: state ? 'error' : 'success',
     });
   }
 
@@ -63,13 +57,13 @@ export function useTodos() {
       clearForm();
       // If the connection is lost, load todos from local storage
       if (isOffline()) {
-        setTodos(get("todos"));
+        todos.value = get('todos');
       } else {
         const fetched = await TodoEndpoint.findAll();
-        setTodos(fetched);
+        todos.value = fetched;
         // Save todos to local storage
-        store("todos", fetched);
-        setUserInfo(await UserInfoService.getUserInfo());
+        store('todos', fetched);
+        userInfo.value = await UserInfoService.getUserInfo();
       }
     })();
   }, []);
@@ -77,7 +71,7 @@ export function useTodos() {
   useEffect(() => {
     subscribeEventEndpoint();
     return () => {
-      subscription?.cancel();
+      subscription.value?.cancel();
     };
   }, [subscription]);
 
@@ -85,9 +79,7 @@ export function useTodos() {
    * Subscribes to the event endpoint and sets up a callback function to handle incoming messages.
    */
   function subscribeEventEndpoint() {
-    if (!subscription) {
-      setSubscription(EventEndpoint.getEventsCancellable().onNext(onMessage));
-    }
+    subscription.value ??= EventEndpoint.getEventsCancellable().onNext(onMessage);
   }
 
   /**
@@ -98,12 +90,12 @@ export function useTodos() {
    */
   function onMessage(event: Message) {
     if (event.messageType == MessageType.EDITING) {
-      Notification.show(event.data, { theme: "warning" });
+      Notification.show(event.data, { theme: 'warning' });
     } else {
-      Notification.show(event.data, { theme: "success" });
+      Notification.show(event.data, { theme: 'success' });
       setTimeout(async () => {
         // Wait 3 seconds before updating the list of todos
-        setTodos(await TodoEndpoint.findAll());
+        todos.value = await TodoEndpoint.findAll();
       }, 3000);
     }
   }
@@ -114,18 +106,18 @@ export function useTodos() {
    */
   async function remove(): Promise<void> {
     // Collect done Todos and request to remove from the database using TodoEndpoint.remove
-    const dones = todos.filter((todo) => todo.done);
+    const dones = todos.value.filter((todo) => todo.done);
     await TodoEndpoint.remove(dones);
-    const notDone = todos.filter((todo) => !todo.done);
-    setTodos(notDone);
+    const notDone = todos.value.filter((todo) => !todo.done);
+    todos.value = notDone;
   }
 
   /**
-   * Submits a todo for saving.
-   * @param todo The todo to be saved.
+   * Submits a Todo for saving.
+   * @param todo The Todo to be saved.
    */
   async function submitTodo(todo: Todo) {
-    var saved: Todo | undefined;
+    let saved: Todo | undefined;
     try {
       saved = await TodoEndpoint.save(todo);
     } catch (error) {
@@ -135,32 +127,25 @@ export function useTodos() {
     if (saved) {
       const newTodo = saved;
       if (adding) {
-        setTodos([...todos, newTodo]);
+        const oldTodos = todos.value;
+        todos.value = [...oldTodos, newTodo];
       } else {
-        setTodos(
-          todos.map((item) => (item.id === newTodo.id ? newTodo : item))
-        );
+        todos.value = todos.value.map((item) => (item.id === newTodo.id ? newTodo : item));
       }
     }
   }
 
   /**
-   * Edits a todo.
-   * @param todo - The todo to be edited.
+   * Edits a Todo.
+   * @param todo - The Todo to be edited.
    */
   function edit(todo: Todo) {
-    setAdding(false);
+    adding.value = false;
     read(todo);
-    const id = todo.id ? todo.id : 0;
+    const id = todo.id ?? 0;
     const message: Message = {
       id: id,
-      data:
-        userInfo?.fullName +
-        " (" +
-        userInfo?.name +
-        ') is editing "' +
-        todo.task +
-        '"',
+      data: userInfo.value?.fullName + ' (' + userInfo.value?.name + ') is editing "' + todo.task + '"',
       messageType: MessageType.EDITING,
     };
     EventEndpoint.send(message);
@@ -170,8 +155,9 @@ export function useTodos() {
    * Sets the state of adding to true and clears the input fields.
    */
   function addNew() {
-    setAdding(true);
-    clearForm;
+    adding.value = true;
+    clearForm();
+    // The following are not working due https://github.com/vaadin/hilla/issues/2185
     // clear(); // read(TodoModel.createEmptyValue());
   }
 
@@ -182,32 +168,29 @@ export function useTodos() {
    */
   function clearForm() {
     const empty = TodoModel.createEmptyValue();
-    empty.task = ""; // ComboBox does not accept undefined
+    empty.task = ''; // ComboBox does not accept undefined
     empty.priority = 0; // IntegerField does not accept undefined
     read(empty);
   }
 
   /**
-   * Updates the status of a todo.
+   * Updates the status of a Todo.
    *
-   * @param todo - The todo to update.
-   * @param done - The new status of the todo.
+   * @param todo - The Todo to update.
+   * @param done - The new status of the Todo.
    * @returns A promise that resolves when the update is complete.
    */
-  async function changeStatus(
-    todo: Todo,
-    done: boolean | undefined
-  ): Promise<void> {
+  async function changeStatus(todo: Todo, done: boolean | undefined): Promise<void> {
     // Update status of the Todo, this function is passed down to TodoItem via TodoGrid
-    const isDone = done ? done : false;
+    const isDone = done ?? false;
     const newTodo = { ...todo, done: isDone };
     const saved = (await TodoEndpoint.save(newTodo)) ?? newTodo;
-    setTodos(todos.map((item) => (item.id === todo.id ? saved : item)));
+    todos.value = todos.value.map((item) => (item.id === todo.id ? saved : item));
   }
 
   return [
-    todos,
-    adding,
+    todos as Signal<Todo[]>,
+    adding as Signal<boolean>,
     model,
     value as Todo,
     remove,
@@ -217,7 +200,7 @@ export function useTodos() {
     submit,
     field,
     invalid,
-    offline as boolean,
+    offline as Signal<boolean>,
   ] as const;
 }
 
@@ -230,8 +213,8 @@ function handleError(error: unknown) {
   // Handle errors from the backend, which are thrown as EndpointError with JSON message.
   // Backend performs validation.
   if (error instanceof EndpointError) {
-    Notification.show(error.message, { theme: "error" });
+    Notification.show(error.message, { theme: 'error' });
   } else {
-    Notification.show("Error in saving", { theme: "error" });
+    Notification.show('Error in saving', { theme: 'error' });
   }
 }

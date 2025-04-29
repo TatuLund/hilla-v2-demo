@@ -85,7 +85,7 @@ function createI18n(language: Language): DatePickerI18n {
   };
 
   const parseDateIso8601 = (inputValue: string): DatePickerDate => {
-    var date: Date;
+    let date: Date;
     if (inputValue.length > 8) {
       date = dateFnsParse(inputValue, dateFormats[language], new Date());
     } else {

@@ -1,5 +1,7 @@
 package com.example.application.data;
 
+import org.jspecify.annotations.NonNull;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

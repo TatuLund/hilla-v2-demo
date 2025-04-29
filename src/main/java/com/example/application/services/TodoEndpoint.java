@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,6 @@ import com.example.application.data.TodoRepository;
 import com.example.application.services.EventService.Message;
 
 import com.vaadin.hilla.BrowserCallable;
-import com.vaadin.hilla.Nonnull;
 import com.vaadin.hilla.exception.EndpointException;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -42,7 +42,7 @@ public class TodoEndpoint {
      * @return the list of todos
      */
     @Transactional
-    public @Nonnull List<@Nonnull Todo> findAll() {
+    public @NonNull List<@NonNull Todo> findAll() {
         doWait();
         logger.info("Fetching all todos");
         return repository.findAll();

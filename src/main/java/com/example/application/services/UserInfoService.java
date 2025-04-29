@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +15,6 @@ import com.example.application.data.User;
 import com.example.application.data.UserRepository;
 
 import com.vaadin.hilla.BrowserCallable;
-import com.vaadin.hilla.Nonnull;
 import jakarta.annotation.security.PermitAll;
 
 @BrowserCallable
@@ -24,7 +24,7 @@ public class UserInfoService {
     UserRepository userRepository;
 
     @PermitAll
-    @Nonnull
+    @NonNull
     public UserInfo getUserInfo() {
         Authentication auth = SecurityContextHolder.getContext()
                 .getAuthentication();

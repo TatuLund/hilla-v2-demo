@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.application.data.Contact;
 
 import com.vaadin.hilla.BrowserCallable;
-import com.vaadin.hilla.Nonnull;
 
 /**
  * This class represents the endpoint for managing contacts.
@@ -27,9 +27,9 @@ public class ContactEndpoint {
     Logger logger = LoggerFactory.getLogger(ContactEndpoint.class);
 
     static class PageResponse {
-        @Nonnull
-        public List<@Nonnull Contact> content;
-        @Nonnull
+        @NonNull
+        public List<@NonNull Contact> content;
+        @NonNull
         public Long size;
     }
 
@@ -37,7 +37,7 @@ public class ContactEndpoint {
         this.contactService = contactService;
     }
 
-    @Nonnull
+    @NonNull
     @Transactional
     public PageResponse getPage(int page, int pageSize, String filter, String direction) {
         try {
@@ -63,7 +63,7 @@ public class ContactEndpoint {
 
     // Secure endpoint method for ADMIN users only as user can re-enable buttons
     // using browser devtools, etc.
-    @Nonnull
+    @NonNull
     @RolesAllowed("ADMIN")
     @Transactional
     public Contact saveContact(Contact contact) {

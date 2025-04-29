@@ -1,5 +1,5 @@
 import MainLayout from 'Frontend/views/MainLayout.js';
-import { createBrowserRouter, RouteObject, useMatches } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useMatches } from 'react-router';
 import LoginView from './views/LoginView';
 import { protectRoutes, RouteObjectWithAuth } from '@vaadin/hilla-react-auth';
 import TodoView from 'Frontend/views/todo/TodoView.js';

@@ -1,15 +1,15 @@
 import type Todo from 'Frontend/generated/com/example/application/data/Todo';
 import { Checkbox } from '@vaadin/react-components/Checkbox.js';
 import { Tooltip } from '@vaadin/react-components/Tooltip.js';
-import Badge from 'Frontend/components/badge/Badge';
+import Badge, { BadgeType } from 'Frontend/components/badge/Badge';
 
-type Props = {
+type Props = Readonly<{
   todo: Todo;
   onChangeStatus: (todo: Todo, value: boolean | undefined) => void;
   onClick: (todo: Todo) => void;
   readonly: boolean;
   highlight: boolean;
-};
+}>;
 
 /**
  * Renders a single todo item.
@@ -34,22 +34,7 @@ export default function TodoItem({ todo, onChangeStatus, onClick, highlight, rea
       >
         <Tooltip position="start" slot="tooltip" text="Done"></Tooltip>
       </Checkbox>
-      <span
-        tabIndex={0}
-        id={'task-' + todo.id}
-        onKeyDown={(e) => {
-          if (e.key == ' ') {
-            e.preventDefault();
-            onClick(todo);
-          }
-        }}
-        role="button"
-        aria-label="Edit item"
-        onClick={(e) => onClick(todo)}
-        className={'text-primary text-l font-bold' + (highlight ? ' bg-primary-10' : '')}
-      >
-        {todo.task}
-      </span>
+      {generateTodoButton(todo, onClick, highlight)}
       <Tooltip position="start-bottom" for={'task-' + todo.id} text="Edit me"></Tooltip>
       <span id={'desc-' + todo.id} className={'hidden lg:flex' + (highlight ? ' bg-primary-10' : '')}>
         <span className="block w-full whitespace-nowrap overflow-ellipsis overflow-hidden">{todo.description}</span>
@@ -59,13 +44,47 @@ export default function TodoItem({ todo, onChangeStatus, onClick, highlight, rea
         {todo.assigned ? todo.assigned?.firstName + ' ' + todo.assigned?.lastName : 'unassigned'}
       </span>
       <span className={'hidden lg:flex' + (highlight ? ' bg-primary-10' : '')}>{todo.deadline}</span>
-      <Badge
-        type={todo.priority ? (todo.priority == 5 ? 'badge primary' : 'badge') : 'badge warning'}
-        id={'badge-' + todo.id}
-        className="text-s ml-auto"
-        text={todo.priority ? '' + todo.priority : '-'}
-      ></Badge>
+      {(createPriorityBadge(todo))()}
       <Tooltip position="end-bottom" for={'badge-' + todo.id} text="Priority"></Tooltip>
     </>
   );
 }
+
+function generateTodoButton(todo: Todo, onClick: (todo: Todo) => void, highlight: boolean) {
+  return <span
+    tabIndex={0}
+    id={'task-' + todo.id}
+    onKeyDown={(e) => {
+      if (e.key == ' ') {
+        e.preventDefault();
+        onClick(todo);
+      }
+    } }
+    role="button"
+    aria-label="Edit item"
+    onClick={(e) => onClick(todo)}
+    className={'text-primary text-l font-bold' + (highlight ? ' bg-primary-10' : '')}
+  >
+    {todo.task}
+  </span>;
+}
+
+function createPriorityBadge(todo: Todo) {
+  return () => {
+    let badgeType: BadgeType;
+    if (todo.priority) {
+      badgeType = todo.priority == 5 ? 'badge primary' : 'badge';
+    } else {
+      badgeType = 'badge warning';
+    }
+    return (
+      <Badge
+        type={badgeType}
+        id={'badge-' + todo.id}
+        className="text-s ml-auto"
+        text={todo.priority ? '' + todo.priority : '-'}
+      ></Badge>
+    );
+  };
+}
+

@@ -1,8 +1,8 @@
 package com.example.application.services;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
-import com.vaadin.hilla.Nonnull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.EmitFailureHandler;
@@ -17,9 +17,9 @@ public class EventService {
     }
 
     public static class Message {
-        public @Nonnull String data;
-        public @Nonnull Integer id = -1;
-        public @Nonnull MessageType messageType = MessageType.INFO;
+        public @NonNull String data;
+        public @NonNull Integer id = -1;
+        public @NonNull MessageType messageType = MessageType.INFO;
     }
 
     private Many<Message> event;
@@ -30,7 +30,7 @@ public class EventService {
         bus = event.asFlux().replay(1).autoConnect();
     }
 
-    public @Nonnull Flux<Message> join() {
+    public @NonNull Flux<Message> join() {
         return bus;
     }
 

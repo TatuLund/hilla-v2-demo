@@ -2,30 +2,30 @@ package com.example.application.data;
 
 import java.time.LocalDate;
 
+import org.jspecify.annotations.NonNull;
+
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import com.vaadin.hilla.Nonnull;
-
 @Entity
 public class Contact extends AbstractEntity {
 
     @NotEmpty
-    @Nonnull
+    @NonNull
     private String firstName = "";
 
     @NotEmpty
-    @Nonnull
+    @NonNull
     private String lastName = "";
 
     @Email
     @NotEmpty
-    @Nonnull
+    @NonNull
     private String email = "";
 
-    @Nonnull
+    @NonNull
     @NotNull
     private LocalDate date;
 

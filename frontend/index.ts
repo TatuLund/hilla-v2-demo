@@ -6,5 +6,3 @@ const root = createRoot(document.getElementById('outlet')!);
 
 const element = createElement(App);
 root.render(element);
-
-// document.documentElement.setAttribute('theme', 'dark');

@@ -1,5 +1,6 @@
 package com.example.application.services;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,7 +8,6 @@ import com.example.application.services.EventService.Message;
 
 import com.vaadin.hilla.BrowserCallable;
 import com.vaadin.hilla.EndpointSubscription;
-import com.vaadin.hilla.Nonnull;
 import jakarta.annotation.security.PermitAll;
 import reactor.core.publisher.Flux;
 
@@ -23,7 +23,7 @@ public class EventEndpoint {
         this.service = service;
     }
 
-    public @Nonnull Flux<Message> join() {
+    public @NonNull Flux<Message> join() {
         return service.join();
     }
 
@@ -31,7 +31,7 @@ public class EventEndpoint {
         service.send(message);
     }
 
-    public EndpointSubscription<@Nonnull Message> getEventsCancellable() {
+    public EndpointSubscription<@NonNull Message> getEventsCancellable() {
         logger.info("Events subscription has been requested");
         return EndpointSubscription.of(service.join(), () -> {
             logger.info("Subscription has been cancelled");

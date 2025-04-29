@@ -3,17 +3,17 @@ package com.example.application.services;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.vaadin.hilla.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public class UserInfo {
 
-    @Nonnull
+    @NonNull
     private String name;
-    @Nonnull
+    @NonNull
     private byte[] picture;
-    @Nonnull
+    @NonNull
     private String fullName;
-    @Nonnull
+    @NonNull
     private Collection<String> authorities;
 
     public UserInfo(String name, Collection<String> authorities, String fullName, byte[] picture) {

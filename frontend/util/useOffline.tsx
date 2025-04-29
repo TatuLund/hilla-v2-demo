@@ -1,11 +1,12 @@
 import { ConnectionState, ConnectionStateStore } from '@vaadin/common-frontend';
-import { useEffect, useState } from 'react';
+import { Signal, useSignal } from '@vaadin/hilla-react-signals';
+import { useEffect } from 'react';
 
 /**
  * Represents the offline hook.
  */
 type OfflineHook = {
-  offline: boolean;
+  offline: Signal<boolean>;
   isOffline: () => boolean;
   clearCache: () => void;
   store: (key: string, value: any) => void;
@@ -32,16 +33,16 @@ type OfflineProps = {
  * @returns {OfflineHook} An object containing the offline state and a function to check if the application is offline.
  */
 export function useOffline(props?: OfflineProps): OfflineHook {
-  const [offline, setOffline] = useState(false);
-  var connectionStateStore: ConnectionStateStore | undefined;
-  var internalState = isOffline();
-  const CACHE_NAME = props?.cacheName || 'offline-cache';
+  const offline = useSignal(false);
+  let connectionStateStore: ConnectionStateStore | undefined;
+  let internalState = isOffline();
+  const CACHE_NAME = props?.cacheName ?? 'offline-cache';
 
   // Listen connection state changes
   const connectionStateListener = () => {
     const newState = isOffline();
-    const changed = newState != internalState ? true : false;
-    setOffline(newState);
+    const changed = newState !== internalState;
+    offline.value = newState;
     internalState = newState;
     if (changed) {
       props?.onOfflineChange?.(internalState);
@@ -98,7 +99,7 @@ export function useOffline(props?: OfflineProps): OfflineHook {
   }
 
   function getCache(): any {
-    const cache = localStorage.getItem(CACHE_NAME) || '{}';
+    const cache = localStorage.getItem(CACHE_NAME) ?? '{}';
     return JSON.parse(cache);
   }
 

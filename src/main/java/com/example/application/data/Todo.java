@@ -2,6 +2,8 @@ package com.example.application.data;
 
 import java.time.LocalDate;
 
+import org.jspecify.annotations.NonNull;
+
 import com.example.application.validators.CustomDateConstraint;
 
 import jakarta.persistence.Entity;
@@ -18,9 +20,12 @@ public class Todo extends AbstractEntity {
 
     @NotBlank
     @NotNull
+    @NonNull
     private String task;
 
     @NotBlank
+    @NonNull
+    @NotNull
     private String description;
 
     @Max(5)

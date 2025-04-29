@@ -1,11 +1,11 @@
 import { DetailedHTMLProps } from 'react';
 
-type BadgeType = 'badge' | 'badge primary' | 'badge success' | 'badge error' | 'badge warning';
+export type BadgeType = 'badge' | 'badge primary' | 'badge success' | 'badge error' | 'badge warning';
 
 /**
  * Props for the Badge component.
  */
-interface BadgeProps extends DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {
+type BadgeProps = Readonly<DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> & {
   /**
    * The ID of the badge.
    */
@@ -18,7 +18,7 @@ interface BadgeProps extends DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElem
    * The text content of the badge.
    */
   text?: string;
-}
+}>;
 
 /**
  * Renders a badge component.

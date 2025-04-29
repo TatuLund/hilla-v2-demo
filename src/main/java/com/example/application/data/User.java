@@ -2,7 +2,6 @@ package com.example.application.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import com.vaadin.hilla.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -12,6 +11,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.util.Set;
+
+import org.jspecify.annotations.NonNull;
 
 @Entity
 @Table(name = "application_user")
@@ -23,11 +24,11 @@ public class User extends AbstractEntity {
     private String hashedPassword;
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    @Nonnull
+    @NonNull
     private Set<Role> roles;
     @Lob
     @Column(length = 1000000)
-    @Nonnull
+    @NonNull
     private byte[] profilePicture;
 
     public String getUsername() {

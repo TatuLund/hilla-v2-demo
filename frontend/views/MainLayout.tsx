@@ -5,10 +5,12 @@ import { DrawerToggle } from '@vaadin/react-components/DrawerToggle.js';
 import { useAuth } from 'Frontend/auth.js';
 import Placeholder from 'Frontend/components/placeholder/Placeholder';
 import { useRouteMetadata } from 'Frontend/util/routing';
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { Item } from '@vaadin/react-components/Item.js';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { MenuProps, routes, useViewMatches, ViewRouteObject } from 'Frontend/routes.js';
+import { NavLink, Outlet, useNavigate } from 'react-router';
+import { SideNav } from '@vaadin/react-components/SideNav.js';
+import { SideNavItem } from '@vaadin/react-components/SideNavItem.js';
+import { MenuProps, routes, useViewMatches } from 'Frontend/routes.js';
 import UserInfo from 'Frontend/generated/com/example/application/services/UserInfo';
 import { Tooltip } from '@vaadin/react-components/Tooltip.js';
 import { RouteObjectWithAuth } from '@vaadin/hilla-react-auth';
@@ -42,7 +44,7 @@ function profilePictureUrl(userInfo: UserInfo): string {
 export default function MainLayout() {
   const currentTitle = useRouteMetadata()?.title ?? 'My App';
   const menuRoutes = (routes[0]?.children || []).filter(
-    (route) => route.path && route.handle && route.handle.icon && route.handle.title
+    (route) => route.path && route.handle?.icon && route.handle?.title
   ) as readonly MenuRoute[];
   const matches = useViewMatches();
   const navigate = useNavigate();
@@ -55,13 +57,16 @@ export default function MainLayout() {
    */
   function Menu() {
     return (
-      <nav>
+      <SideNav>
         {menuRoutes
           .filter((route) => hasAccess({ rolesAllowed: route.handle.rolesAllowed }))
           .map(({ path, handle: { icon, title } }) => (
-            <MenuLink key={path} path={path} handle={{ icon, title }} />
+            <SideNavItem key={path} path={path}>
+              {title}
+              <span slot="prefix" className={`${icon} ${'navicon'}`} aria-hidden="true"></span>
+            </SideNavItem>
           ))}
-      </nav>
+      </SideNav>
     );
   }
 
@@ -138,10 +143,10 @@ export default function MainLayout() {
  */
 function MenuLink({ path, handle: { icon, title } }: MenuRoute) {
   return (
-    <NavLink className={({ isActive }) => `${"navlink"} ${isActive ? "navlink_active" : ''}`} key={path} to={path}>
+    <NavLink className={({ isActive }) => `${'navlink'} ${isActive ? 'navlink_active' : ''}`} key={path} to={path}>
       {({ isActive }) => (
         <Item key={path} selected={isActive}>
-          <span className={`${icon} ${"navicon"}`} aria-hidden="true"></span>
+          <span className={`${icon} ${'navicon'}`} aria-hidden="true"></span>
           {title}
         </Item>
       )}
@@ -154,7 +159,7 @@ function MenuLink({ path, handle: { icon, title } }: MenuRoute) {
  * @param userInfo - The user information.
  * @returns The AvatarWithTooltip component.
  */
-function AvatarWithTooltip({ userInfo }: { userInfo: UserInfo }) {
+function AvatarWithTooltip({ userInfo }: { readonly userInfo: UserInfo }) {
   return (
     <Avatar
       id="avatar"

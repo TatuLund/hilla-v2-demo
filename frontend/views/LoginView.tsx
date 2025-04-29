@@ -1,8 +1,8 @@
-import { LoginI18n, LoginOverlay, LoginOverlayElement } from '@vaadin/react-components/LoginOverlay.js';
+import { LoginI18n, LoginOverlay } from '@vaadin/react-components/LoginOverlay.js';
 import { PasswordFieldElement } from '@vaadin/react-components/PasswordField.js';
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { useAuth } from 'Frontend/auth.js';
+import { useSignal } from '@vaadin/hilla-react-signals';
 
 const loginI18nDefault: LoginI18n = {
   form: {
@@ -24,11 +24,11 @@ const loginI18nDefault: LoginI18n = {
 export default function LoginView() {
   // const { state, authenticate } = useContext(AuthContext);
   const { state, login } = useAuth();
-  const [hasError, setError] = useState<boolean>();
-  const [url, setUrl] = useState<string>();
+  const hasError = useSignal<boolean>();
+  const url = useSignal<string>();
 
-  if (state.user && url) {
-    const path = new URL(url, document.baseURI).pathname;
+  if (state.user && url.value) {
+    const path = new URL(url.value, document.baseURI).pathname;
     return <Navigate to={path} replace />;
   }
 
@@ -40,16 +40,16 @@ export default function LoginView() {
         }, 100);
       }}
       opened
-      error={hasError}
+      error={hasError.value}
       noForgotPassword
       i18n={loginI18nDefault}
       onLogin={async ({ detail: { username, password } }) => {
         const { defaultUrl, error, redirectUrl } = await login(username, password);
         if (error) {
-          setError(true);
+          hasError.value = true;
         } else {
           localStorage.setItem('loggedIn', 'true');
-          setUrl(redirectUrl ?? defaultUrl ?? '/');
+          url.value = redirectUrl ?? defaultUrl ?? '/';
         }
       }}
     />
