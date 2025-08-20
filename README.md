@@ -16,6 +16,18 @@ app is a bit fabricated and is more purposed to demonstrate certain advanced top
 - Style Grid to have hover effect on data rows
 - Inject tooltip to header with sorter
 
+## Before running
+
+Create file "config/secrets/application.properties"
+
+use this command to generate new random secret for your app:
+
+openssl rand -base64 32
+
+Copy the <secret key> to property in application.properties file
+
+com.example.application.app.secret=<secret key>
+
 ## Running the application
 
 The project is a standard Maven project. To run it from the command line,
