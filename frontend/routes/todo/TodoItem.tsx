@@ -1,7 +1,11 @@
 import type Todo from 'Frontend/generated/com/example/application/data/Todo';
 import { Checkbox } from '@vaadin/react-components/Checkbox.js';
 import { Tooltip } from '@vaadin/react-components/Tooltip.js';
+import { Notification } from '@vaadin/react-components/Notification.js';
 import Badge, { BadgeType } from 'Frontend/components/badge/Badge';
+import { Button } from '@vaadin/react-components/Button.js';
+import { useSignal } from '@vaadin/hilla-react-signals';
+import { Icon } from '@vaadin/react-components/Icon.js';
 
 type Props = Readonly<{
   todo: Todo;
@@ -44,29 +48,54 @@ export default function TodoItem({ todo, onChangeStatus, onClick, highlight, rea
         {todo.assigned ? todo.assigned?.firstName + ' ' + todo.assigned?.lastName : 'unassigned'}
       </span>
       <span className={'hidden lg:flex' + (highlight ? ' bg-primary-10' : '')}>{todo.deadline}</span>
-      {(createPriorityBadge(todo))()}
+      {createPriorityBadge(todo)()}
       <Tooltip position="end-bottom" for={'badge-' + todo.id} text="Priority"></Tooltip>
     </>
   );
 }
 
+type TodoButtonProps = Readonly<{
+  message: string;
+  onClosed: () => void;
+}>;
+
+function MyNotification({ message, onClosed }: TodoButtonProps): JSX.Element {
+  const opened = useSignal(true);
+  return (
+    <Notification onClosed={onClosed} opened={opened.value}>
+      <div className="flex flex-col w-full">
+        <div className="inline-flex w-full justify-between items-center">
+          <div className="text-xs ml-m" style={{ verticalAlign: 'middle' }}>
+            <p>{message as string}</p>
+          </div>
+          <Button onClick={() => (opened.value = false)} theme="tertiary-inline" className="text xs ml-m">
+            <Icon icon="vaadin:close" style={{ color: 'var(--lumo-contrast-60pct)' }}></Icon>
+          </Button>
+        </div>
+      </div>
+    </Notification>
+  );
+}
+
 function generateTodoButton(todo: Todo, onClick: (todo: Todo) => void, highlight: boolean) {
-  return <span
-    tabIndex={0}
-    id={'task-' + todo.id}
-    onKeyDown={(e) => {
-      if (e.key == ' ') {
-        e.preventDefault();
-        onClick(todo);
-      }
-    } }
-    role="button"
-    aria-label="Edit item"
-    onClick={(e) => onClick(todo)}
-    className={'text-primary text-l font-bold' + (highlight ? ' bg-primary-10' : '')}
-  >
-    {todo.task}
-  </span>;
+  return (
+    <span
+      tabIndex={0}
+      id={'task-' + todo.id}
+      onKeyDown={(e) => {
+        if (e.key == ' ') {
+          e.preventDefault();
+          onClick(todo);
+        }
+      }}
+      role="button"
+      aria-label="Edit item"
+      onClick={(e) => onClick(todo)}
+      className={'text-primary text-l font-bold' + (highlight ? ' bg-primary-10' : '')}
+    >
+      {todo.task}
+    </span>
+  );
 }
 
 function createPriorityBadge(todo: Todo) {
@@ -87,4 +116,3 @@ function createPriorityBadge(todo: Todo) {
     );
   };
 }
-

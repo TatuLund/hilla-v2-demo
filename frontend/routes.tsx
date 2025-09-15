@@ -1,12 +1,12 @@
-import MainLayout from 'Frontend/views/MainLayout.js';
+import MainLayout from 'Frontend/routes/MainLayout.js';
 import { createBrowserRouter, RouteObject, useMatches } from 'react-router';
-import LoginView from './views/LoginView';
+import LoginView from './routes/LoginView';
 import { protectRoutes, RouteObjectWithAuth } from '@vaadin/hilla-react-auth';
-import TodoView from 'Frontend/views/todo/TodoView.js';
-import StatsView from 'Frontend/views/stats/StatsView.js';
-import EditorView from 'Frontend/views/stats/EditorView.js';
-import GoogleChartView from 'Frontend/views/stats/GoogleChartView.js';
-import Checks from './views/stats/Checks';
+import TodoView from 'Frontend/routes/todo/TodoView.js';
+import StatsView from 'Frontend/routes/stats/StatsView.js';
+import EditorView from 'Frontend/routes/stats/EditorView.js';
+import GoogleChartView from 'Frontend/routes/stats/GoogleChartView.js';
+import Checks from './routes/stats/Checks';
 
 // const TodoView = lazy(async () => import('Frontend/views/todo/TodoView.js'));
 // const StatsView = lazy(async () => import('Frontend/views/stats/StatsView.js'));
